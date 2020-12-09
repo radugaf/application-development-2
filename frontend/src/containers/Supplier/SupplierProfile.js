@@ -1,5 +1,4 @@
 import React from "react";
-// import AddProductCSS from "../assets/css/components-css/addProduct/addProduct.scss";
 
 class SupplierProfile extends React.Component {
   render() {

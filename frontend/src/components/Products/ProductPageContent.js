@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from 'react-router-dom'
-import ProductsPageCCss from "../../assets/css/components-css/productsPage/productspagecontent.scss";
 import ProductList from './ProductList'
 import ProductListFilters from './ProductListFilters'
 
@@ -17,7 +16,7 @@ class ProductsPageContent extends React.Component {
         <div className="ui component">
           <ProductList />
         </div>
-       
+
       </div>
     );
   }

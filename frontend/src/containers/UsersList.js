@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import Table from "../components/Products/Table";
 import axios from "axios";
 
-import ProductListFiltersCSS from "../assets/css/components-css/productsPage/productslistfilters.scss"
 
 const Genres = ({ values }) => {
   return (

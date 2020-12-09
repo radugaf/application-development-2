@@ -2,8 +2,6 @@ import React, { useMemo, useState, useEffect } from "react";
 import Table from "./Table";
 import axios from "axios";
 
-import ProductListFiltersCSS from "../../assets/css/components-css/productsPage/productslistfilters.scss"
-
 const Genres = ({ values }) => {
   return (
     <>

@@ -1,5 +1,4 @@
 import React from "react";
-import AddProductCSS from "../assets/css/components-css/addProduct/addProduct.scss";
 
 class AddUser extends React.Component {
   constructor(props) {

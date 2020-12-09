@@ -1,5 +1,4 @@
 import React from "react";
-// import AddProductCSS from "../assets/css/components-css/addProduct/addProduct.scss";
 
 class SupplierSignUp extends React.Component {
   render() {
@@ -60,7 +59,7 @@ class SupplierSignUp extends React.Component {
             />
           </div>
 
-         
+
           <button class="ui primary button" type="submit">
             Submit
           </button>
