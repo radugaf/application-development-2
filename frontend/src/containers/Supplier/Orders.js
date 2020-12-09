@@ -1,8 +1,7 @@
 import React from "react";
-import TableProducts from "../../components/TableProducts.js";
 import { Button, Icon } from 'semantic-ui-react'
 
-class ProductsPage extends React.Component {
+class Orders extends React.Component {
   render() {
     return (
       <>
@@ -65,4 +64,4 @@ class ProductsPage extends React.Component {
   }
 }
 
-export default ProductsPage;
+export default Orders;

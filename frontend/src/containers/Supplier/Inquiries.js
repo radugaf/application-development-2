@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import DataTable from "../../components/DataTable/datatable";
+import TestComponent from "../../components/TestComponent";
 
 class Inquiries extends Component {
   render() {
     return (
-      <div className="ui justified container">
-        This is the <strong>Inquiries</strong>.
-        <DataTable />
-      </div>
-
+      <>
+      <br />
+        <TestComponent />
+      </>
 
     );
   }

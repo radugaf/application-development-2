@@ -1,15 +1,16 @@
 import React from "react";
 import MainCss from "./assets/main/main.scss";
 import { BrowserRouter, Route } from "react-router-dom";
-
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 //Components
 import Navbar from "./components/Navbar";
 import TestComponent from "./components/TestComponent";
-import AddProduct from "./components/AddProduct"
+import AddProduct from "./components/AddProduct";
 import AddUser from "./components/AddUser";
 import Login from "./components/Login";
 
-import Terms from './containers/Terms'
+import Terms from "./containers/Terms";
 
 // Containers
 import Home from "./containers/Home";
@@ -17,7 +18,7 @@ import UserSignUp from "./containers/UserSignUp";
 import UsersList from "./containers/UsersList";
 // --> SUPPLIER <--
 import ProductsPage from "./containers/Supplier/ProductsPage";
-import EditProduct from './containers/Supplier/EditProduct'
+import EditProduct from "./containers/Supplier/EditProduct";
 import Inquiries from "./containers/Supplier/Inquiries";
 import SupplierList from "./containers/Supplier/SupplierList";
 import SupplierSignUp from "./containers/Supplier/SupplierSignUp";
@@ -36,9 +37,9 @@ const App = () => {
       <BrowserRouter>
         <Navbar />
         <Route path="/" exact component={Home} />
-        <Route path='/login' exact component={Login} />
+        <Route path="/login" exact component={Login} />
         <Route path="/test" exact component={TestComponent} />
-        
+
         <Route path="/cart" exact component={Cart} />
         <Route path="/wishlist" exact component={WishList} />
         <Route path="/inquiries" exact component={Inquiries} />
@@ -57,7 +58,11 @@ const App = () => {
         <Route path="/restaurants" exact component={RestaurantList} />
         <Route path="/restaurant-sign-up" exact component={RestaurantSignUp} />
         <Route path="/restaurant-profile" exact component={RestaurantProfile} />
-        <Route path="/restaurant-products-page" exact component={RestaurantProductsPage} />
+        <Route
+          path="/restaurant-products-page"
+          exact
+          component={RestaurantProductsPage}
+        />
 
         {/* Supplier */}
         <Route path="/supplier-profile" exact component={SupplierProfile} />

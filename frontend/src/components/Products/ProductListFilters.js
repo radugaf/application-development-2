@@ -1,5 +1,4 @@
 import React from 'react'
-import ProductListFiltersCSS from "../../assets/css/components-css/productsPage/productslistfilters.scss"
 
 const ProductListFilters = () => {
   return <div className="container-filters">
