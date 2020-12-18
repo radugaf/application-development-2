@@ -5,149 +5,152 @@
 }
 
 * {
-  font-family: "Roboto", sans-serif;
-  color: #646777;
+  font-family: "Roboto", sans-serif !important;
+  // color: #646777 !important;
+  font-size: 13px !important;
 }
 
-body {
-  background-color: #f2f4f7;
-  display: flex;
-  min-height: 100vh;
-}
-
-div,
-input,
-textarea {
-  box-sizing: border-box;
-  overflow-wrap: anywhere;
-}
-
-button {
-  padding: 0;
-  margin: 0;
-  border: none;
-  border-radius: none;
-  text-decoration: none;
-}
-
-
-.verde {
-  color: #21BA45;
-}
-
-// TABLE CSS
-
-.table-container {
-  border-collapse:collapse;
-  border:1px solid #E3E4E6;
-  border-top: 2px solid #21BA45;
-  border-radius:6px;
-  -moz-border-radius:5px;
-  width: 100%;
-  margin-top: 15px;
-}
-
-.table-header-container {
-  border-bottom:1px solid #E3E4E6;
-  background-color: #F9FAFB;
-}
-
-.table-header {
-  display: flex;
-  flex-direction: row;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.table-header > span {
-  font-weight: 500;
-  text-transform: uppercase;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  margin-right: 15px;
-}
-
-.table-search-field-container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  background-color: #ffffff;
-  padding: 0;
-  border: 1px solid #E3E4E6;
-  border-radius: 5px;
-}
-
-.table-search-field-input {
-  border: none;
-  height: 25px;
-  padding: 20px;
-  display: flex;
-}
-
-.table-search-field-name, .table-search-field-icon {
-  height: 25px;
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  text-transform: uppercase;
-}
-
-.table-search-field-name {
-  background-color: #F2F4F7;
-  border-right: 1px solid #E3E4E6;
-}
-
-
-
-.table-container > tr > td, .table-container > tr > th {
-  text-align: center;
-  padding: 20px;
-  border:1px solid #E3E4E6;
-}
-
-td {
-  background-color: #ffffff;
-}
-
-// TABLE DETAILS
-
-.ascunde {
-  display: none;
-
-}
-
-.arata {
-
-}
-
-.table-details-container {
-  border-collapse:collapse;
-  border:1px solid black;
-  width: 100%;
-}
-
-.table-details-container > tr > th {
-  background-color: #eeeeee;
-}
-
-.table-details-container > tr > td {
-  background-color: #f5f5f5;
-}
-
-.table-details-container > tr > td, .table-details-container > tr > th {
-  text-align: center;
-  padding: 20px;
-  border:2px solid #cbcbcb;
-}
-
-// MODALS
-
-.table-modals {
-  margin-top: 15px;
-}
-
+// body {
+//   background-color: #f2f4f7;
+//   display: flex;
+//   min-height: 100vh;
+// }
+//
+// div,
+// input,
+// textarea {
+//   box-sizing: border-box;
+//   overflow-wrap: anywhere;
+// }
+//
+// button {
+//   padding: 0;
+//   margin: 0;
+//   border: none;
+//   border-radius: none;
+//   text-decoration: none;
+// }
+//
+// .verde {
+//   color: #21ba45;
+// }
+//
+// .portocaliu {
+//   color: #F26202;
+// }
+//
+// // TABLE CSS
+//
+// .table-container {
+//   border-collapse: collapse;
+//   border: 1px solid #e3e4e6;
+//   border-top: 2px solid #21ba45;
+//   border-radius: 6px;
+//   -moz-border-radius: 5px;
+//   width: 100%;
+//   margin-top: 15px;
+// }
+//
+// .table-header-container {
+//   border-bottom: 1px solid #e3e4e6;
+//   background-color: #f9fafb;
+// }
+//
+// .table-header {
+//   display: flex;
+//   flex-direction: row;
+//   box-sizing: border-box;
+//   align-items: center;
+//   justify-content: space-between;
+// }
+//
+// .table-header > span {
+//   font-weight: 500;
+//   text-transform: uppercase;
+//   display: flex;
+//   flex-direction: column;
+//   box-sizing: border-box;
+//   margin-right: 15px;
+// }
+//
+// .table-search-field-container {
+//   display: flex;
+//   justify-content: flex-end;
+//   align-items: center;
+//   background-color: #ffffff;
+//   padding: 0;
+//   border: 1px solid #e3e4e6;
+//   border-radius: 5px;
+// }
+//
+// .table-search-field-input {
+//   border: none;
+//   height: 25px;
+//   padding: 20px;
+//   display: flex;
+// }
+//
+// .table-search-field-name,
+// .table-search-field-icon {
+//   height: 25px;
+//   display: flex;
+//   align-items: center;
+//   padding: 20px;
+//   text-transform: uppercase;
+// }
+//
+// .table-search-field-name {
+//   background-color: #f2f4f7;
+//   border-right: 1px solid #e3e4e6;
+// }
+//
+// .table-container > tr > td,
+// .table-container > tr > th {
+//   text-align: center;
+//   padding: 20px;
+//   border: 1px solid #e3e4e6;
+// }
+//
+// td {
+//   background-color: #ffffff;
+// }
+//
+// // TABLE DETAILS
+//
+// .ascunde {
+//   display: none;
+// }
+//
+// .arata {
+// }
+//
+// .table-details-container {
+//   border-collapse: collapse;
+//   border: 1px solid black;
+//   width: 100%;
+// }
+//
+// .table-details-container > tr > th {
+//   background-color: #eeeeee;
+// }
+//
+// .table-details-container > tr > td {
+//   background-color: #f5f5f5;
+// }
+//
+// .table-details-container > tr > td,
+// .table-details-container > tr > th {
+//   text-align: center;
+//   padding: 20px;
+//   border: 2px solid #cbcbcb;
+// }
+//
+// // MODALS
+//
+// .table-modals {
+//   margin-top: 15px;
+// }
+//
 // STUPID MODAL FIX SEMANTIC UI
 
 .dimmed.dimmable > .ui.animating.dimmer, .dimmed.dimmable > .ui.visible.dimmer, .ui.active.dimmer {
@@ -162,31 +165,52 @@ td {
   left: auto !important;
   transform-origin: center !important;
   transition: all ease .5s;
-
-
-
-// CART css2
-
-.white-card {
-  display: flex;
-  flex-direction: column;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 5px;
-  width: 100%;
 }
 
-.cart-product-name {
-  text-transform: uppercase;
-  font-weight: 500;
+// // CART css2
+//
+// .white-card {
+//   display: flex;
+//   flex-direction: column;
+//   background-color: #ffffff;
+//   padding: 20px;
+//   border-radius: 5px;
+//   width: 100%;
+// }
+//
+// .cart-product-name {
+//   text-transform: uppercase;
+//   font-weight: 500;
+// }
+//
+// .cart-quantity-form {
+//   padding: 15px;
+// }
+//
+// .form-control {
+//   border: 1px solid #cbcbcb;
+//   margin-bottom: 20px;
+//   padding: 10px;
+// }
+
+.custom-login-wrapper {
+  height: 100vh;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.cart-quantity-form {
-  padding: 15px;
+.test-color {
+  background-color: red;
 }
 
-.form-control {
-  border: 1px solid #cbcbcb;
-  margin-bottom: 20px;
-  padding: 10px;
+.text-break{
+  word-wrap: break-word;
+ }
+
+.padding10 {
+  padding: 10px !important;
+}
+
+.border-box {
+  box-sizing: border-box !important;
 }

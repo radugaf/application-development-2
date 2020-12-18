@@ -5,6 +5,7 @@ function ITableModalsAccept() {
   const [open, setOpen] = React.useState(false)
 
   return (
+    <>
     <Modal
       closeIcon
       open={open}
@@ -27,6 +28,8 @@ function ITableModalsAccept() {
         </Button>
       </Modal.Actions>
     </Modal>
+    {this.props.children}
+    </>
   )
 }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Image, Button, Checkbox, Form, Card, Divider, Header } from 'semantic-ui-react'
 
-class Login extends React.Component {
+class ForgotPassword extends React.Component {
   render() {
     return (
         <Grid verticalAlign='middle' centered fluid className="custom-login-wrapper">
@@ -12,26 +12,23 @@ class Login extends React.Component {
                   <Card.Header textAlign='center'>
                   <Image src='https://react.semantic-ui.com/images/wireframe/image.png' size='tiny' alt='Logo'/>
                   </Card.Header>
-                  <Divider horizontal>Login with username</Divider>
+                  <Divider horizontal>Recuperare parola</Divider>
                   <Form>
                    <Form.Field>
                      <label>Adresa de E-mail</label>
                      <input placeholder='Adresa de E-mail' />
                    </Form.Field>
                    <Form.Field>
-                     <label>Parola</label>
+                     <label>Parola Noua</label>
                      <input placeholder='Parola dvs.' type='password'/>
                    </Form.Field>
                    <Form.Field>
-                     <Checkbox label='Tine-ma minte' />
+                     <label>Confirma parola noua</label>
+                     <input placeholder='Parola dvs.' type='password'/>
                    </Form.Field>
-                   <Button fluid color='green' type='submit'>Login</Button>
+                   <Button fluid color='green' type='submit'>Schimba parola</Button>
                  </Form>
                 </Card.Content>
-                <Divider horizontal>Nu ai cont ?</Divider>
-                  <Header as='h5' icon textAlign='center'>
-                    <Header.Content>Trimite-ne un email la contact@edesia.com</Header.Content>
-                  </Header>
               </Card>
             </Grid.Column>
           </Grid.Row>
@@ -40,4 +37,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default ForgotPassword;

@@ -11,7 +11,6 @@ class Navbar extends React.Component {
     const { activeItem } = this.state;
 
     return (
-
       <Menu>
 
         <Link to="/cart">
@@ -75,7 +74,19 @@ class Navbar extends React.Component {
           Orders
           </Menu.Item>
         </Link>
+
+
+        <Link to="/forgot-password">
+          <Menu.Item
+          name='ForgotPassword'
+          active={activeItem === 'ForgotPassword'}
+          onClick={this.handleItemClick}
+          >
+          Forgot Password
+          </Menu.Item>
+        </Link>
       </Menu>
+
     );
   }
 }
