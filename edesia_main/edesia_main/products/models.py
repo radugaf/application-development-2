@@ -124,7 +124,7 @@ class OrderItem(models.Model):
     price_by_restaurant = models.IntegerField(default=0)
     price_by_supplier = models.IntegerField(default=0)
     final_quantity = models.IntegerField(default=0)
-    final_price = models.IntegerField(default=0)
+    final_price = models.FloatField(default=0)
 
     ordered_date = models.DateTimeField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)

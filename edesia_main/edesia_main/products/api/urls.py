@@ -8,10 +8,10 @@ from .views import *
 app_name='products-api'
 
 urlpatterns = [
-    path('restaurant/', RestaurantCreateReadAPIView.as_view(), name='restaurant'),
+    path('restaurant/<int:id>', RestaurantCreateReadAPIView.as_view(), name='restaurant'),
     path('restaurant-list/', RestaurantListUpdateAPIView.as_view(), name='restaurant-list'),
     path('restaurant-create/', RestaurantCreateReadAPIView.as_view(), name='restaurant-create'),
-    path('restaurant-update/', RestaurantListUpdateAPIView.as_view(), name='restaurant-update'),
+    path('restaurant-update/<int:id>', RestaurantListUpdateAPIView.as_view(), name='restaurant-update'),
     path('restaurant-delete/', RestaurantDeleteAPIView.as_view(), name='restaurant-delete'),
 
     path('staffdetail/', StaffDetailCreateReadAPIView.as_view(), name='staffdetail'),
@@ -32,6 +32,7 @@ urlpatterns = [
     path('product-update/', ProductListUpdateAPIView.as_view(), name='product-update'),
     path('product-delete/', ProductDeleteAPIView.as_view(), name='product-delete'),
 
+    path('product-item-details/<int:product_item_id>/', ProductItemDetailsAPIView.as_view(), name='product-item-details'),
     path('product-list-in-cart/', ProductListInCartAPIView.as_view(), name='product-list-in-cart'),
     path('add-product-in-cart/', AddProductInCartAPIView.as_view(), name='add-product-in-cart'),
     path('update-product-in-cart/', UpdateProductInCartAPIView.as_view(), name='update-product-in-cart'),

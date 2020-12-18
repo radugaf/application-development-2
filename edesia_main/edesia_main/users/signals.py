@@ -10,9 +10,9 @@ from edesia_main.products.models import Cart
 
 User = get_user_model()
 
-# @receiver(post_save, sender=User)
-# def create_cart_for_new_user(sender, instance, created, **kwargs):
-#     """ This signal method will be called after creating a user and if email_confirmed=False """
-#     if created:
-#         # Creating Cart Object whenever a user is created 
-#         created_cart = Cart.object.create(user=instance)
+@receiver(post_save, sender=User)
+def create_cart_for_new_user(sender, instance, created, **kwargs):
+    """ This signal method will be called after creating a user and if email_confirmed=False """
+    if created:
+        # Creating Cart Object whenever a user is created 
+        created_cart = Cart.objects.create(user=instance)

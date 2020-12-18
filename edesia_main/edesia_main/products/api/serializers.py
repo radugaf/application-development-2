@@ -5,12 +5,14 @@ from django.contrib.auth import get_user_model
 
 from edesia_main.products.models import *
 
+from edesia_main.users.api.serializers import UserSerializer
+
 User = get_user_model()
 
 class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
-        fields = ('name', 'address', 'phone_number',)
+        fields = ('name', 'address', 'phone_number')
 
 class StaffDetailSerializer(serializers.ModelSerializer):
     class Meta:
