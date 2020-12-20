@@ -30,11 +30,8 @@ const Inquiries = ({
   GetInquires,
   UpdateInquiry,
   DeclineInquiry,
+  user,
 }) => {
-  useEffect(() => {
-    GetInquires();
-  }, []);
-
   // MODAL SETTINGS
   const [open, setOpen] = React.useState(false);
   const [secondOpen, setSecondOpen] = React.useState(false);
@@ -42,7 +39,9 @@ const Inquiries = ({
   const [currentInquire, setCurrentInquire] = React.useState();
   const [currentQty, setCurrentQty] = React.useState();
 
-  const restaurantName = "Restaurant 1";
+  useEffect(() => {
+    GetInquires();
+  }, []);
 
   const onReject = (e) => {
     e.preventDefault();
@@ -55,15 +54,15 @@ const Inquiries = ({
     setCurrentInquire();
     setSecondOpen(false);
     GetInquires();
-    window.location.href = "/inquiries";
   };
 
-  const onUpdate = (e) => {
+  const onUpdate = (e, type) => {
     UpdateInquiry({
       product_id: currentInquire.product_item_id,
       inquiry_id: currentInquire.enquiry_id,
       price: currentInquire.original_price,
-      quantity: currentQty,
+      quantity:
+        type === "accept" ? currentInquire.quantity_by_restaurant : currentQty,
     });
     GetInquires();
     toastr.success("Accept Inquire", "Inquire Accept Successfully");
@@ -71,7 +70,7 @@ const Inquiries = ({
     setCurrentQty();
     setCurrentInquire();
     setThirdOpen(false);
-    window.location.href = "/inquiries";
+    setOpen(false);
   };
 
   return (
@@ -117,188 +116,188 @@ const Inquiries = ({
                       </Table.Header>
 
                       <Table.Body>
-                        {inquires &&
-                          inquires[restaurantName] &&
-                          inquires[restaurantName].map((inquire) => (
+                        {Object.keys(inquires) &&
+                          Object.keys(inquires).map((key) => (
                             <>
-                              <Table.Row>
-                                <Table.Cell positive>Paste Barilla</Table.Cell>
-                                <Table.Cell positive>
-                                  {inquire.quantity_by_restaurant}
-                                </Table.Cell>
-                                <Table.Cell positive>
-                                  {inquire.price_by_restaurant}
-                                </Table.Cell>
-                                <Table.Cell positive>10 Lei</Table.Cell>
-                                <Table.Cell positive>50 Lei</Table.Cell>
-                              </Table.Row>
-                              <Table.Row>
-                                <Table.Cell colspan="6" textAlign="center">
-                                  <Modal
-                                    closeIcon
-                                    open={open}
-                                    trigger={
-                                      <Button color="green">Accepta</Button>
-                                    }
-                                    onClose={() => {
-                                      setCurrentInquire();
-                                      setOpen(false);
-                                    }}
-                                    onOpen={() => {
-                                      setCurrentInquire(inquire);
-                                      setOpen(true);
-                                    }}
-                                  >
-                                    <Header content="Accepta comanda integral" />
-                                    <Modal.Content>
-                                      <p>
-                                        Esti sigur ca vrei sa accepti comanda
-                                        integral ?
-                                      </p>
-                                    </Modal.Content>
-                                    <Modal.Actions>
-                                      <Button
-                                        color="green"
-                                        onClick={() => {
-                                          setCurrentInquire();
-                                          setOpen(false);
-                                        }}
+                              <h2>{key}</h2>
+                              {inquires &&
+                                inquires[key] &&
+                                inquires[key].map((inquire) => (
+                                  <>
+                                    <Table.Row>
+                                      <Table.Cell positive>
+                                        Paste Barilla
+                                      </Table.Cell>
+                                      <Table.Cell positive>
+                                        {inquire.quantity_by_restaurant}
+                                      </Table.Cell>
+                                      <Table.Cell positive>
+                                        {inquire.price_by_restaurant}
+                                      </Table.Cell>
+                                      <Table.Cell positive>10 Lei</Table.Cell>
+                                      <Table.Cell positive>50 Lei</Table.Cell>
+                                    </Table.Row>
+                                    <Table.Row>
+                                      <Table.Cell
+                                        colspan="6"
+                                        textAlign="center"
                                       >
-                                        <Icon name="remove" /> Da
-                                      </Button>
-                                      <Button
-                                        color="red"
-                                        onClick={() => {
-                                          setCurrentInquire();
-                                          setOpen(false);
-                                        }}
-                                      >
-                                        <Icon name="checkmark" /> Nu
-                                      </Button>
-                                    </Modal.Actions>
-                                  </Modal>
-
-                                  <Modal
-                                    closeIcon
-                                    SecondOpen={open}
-                                    trigger={
-                                      <Button color="red">Refuza</Button>
-                                    }
-                                    onClose={() => {
-                                      setCurrentInquire();
-                                      setSecondOpen(false);
-                                    }}
-                                    onOpen={(e) => {
-                                      setCurrentInquire(inquire);
-                                      setSecondOpen(true);
-                                    }}
-                                  >
-                                    <Header content="Refuza comanda integral" />
-                                    <Modal.Content>
-                                      <p>
-                                        Esti sigur ca vrei sa refuzi comanda
-                                        integral ?
-                                      </p>
-                                    </Modal.Content>
-                                    <Modal.Actions>
-                                      <Button
-                                        color="green"
-                                        onClick={(e) => onReject(e)}
-                                      >
-                                        <Icon name="remove" /> Da
-                                      </Button>
-                                      <Button
-                                        color="red"
-                                        onClick={() => {
-                                          setCurrentInquire();
-                                          setSecondOpen(false);
-                                        }}
-                                      >
-                                        <Icon name="checkmark" /> Nu
-                                      </Button>
-                                    </Modal.Actions>
-                                  </Modal>
-
-                                  <Modal
-                                    closeIcon
-                                    thirdOpen={open}
-                                    trigger={
-                                      <Button color="orange">Partial</Button>
-                                    }
-                                    onClose={() => {
-                                      setCurrentInquire();
-                                      setThirdOpen(false);
-                                    }}
-                                    onOpen={() => {
-                                      setCurrentInquire(inquire);
-                                      setThirdOpen(true);
-                                    }}
-                                  >
-                                    <Header content="Accepta comanda partial" />
-                                    <Modal.Content scroll>
-                                      <>
-                                        <h2>Nume Produs : </h2>
-                                        <p>
-                                          Cantitate Ceruta :
-                                          {inquire.quantity_by_restaurant}
-                                        </p>
-                                        <p>Valoare Buc : 10 Lei</p>
-                                        <p>Valoare Totala : 120 Lei</p>
-                                        <Form>
-                                          <Form.Field>
-                                            <Input
-                                              label="Cantitate disponibila"
-                                              placeholder="ex : 10"
-                                              onBlur={(e) =>
-                                                setCurrentQty(+e.target.value)
+                                        <Modal
+                                          closeIcon
+                                          open={open}
+                                          trigger={
+                                            <Button color="green">
+                                              Accepta
+                                            </Button>
+                                          }
+                                          onClose={() => {
+                                            setCurrentInquire();
+                                            setOpen(false);
+                                          }}
+                                          onOpen={() => {
+                                            setCurrentInquire(inquire);
+                                            setOpen(true);
+                                          }}
+                                        >
+                                          <Header content="Accepta comanda integral" />
+                                          <Modal.Content>
+                                            <p>
+                                              Esti sigur ca vrei sa accepti
+                                              comanda integral ?
+                                            </p>
+                                          </Modal.Content>
+                                          <Modal.Actions>
+                                            <Button
+                                              color="green"
+                                              onClick={(e) =>
+                                                onUpdate(e, "accept")
                                               }
-                                            />
-                                          </Form.Field>
-                                        </Form>
-                                        <br />
-                                        <Divider />
-                                        <br />
-                                      </>
-                                      {/* <>
-                                        <h2>Nume Produs : Paste Barilla</h2>
-                                        <p>Cantitate Ceruta : 12 Buc</p>
-                                        <p>Valoare Buc : 10 Lei</p>
-                                        <p>Valoare Totala : 120 Lei</p>
-                                        <Form>
-                                          <Form.Field>
-                                            <Input
-                                              label="Cantitate disponibila"
-                                              placeholder="ex : 10"
-                                            />
-                                          </Form.Field>
-                                        </Form>
-                                        <br />
-                                        <Divider />
-                                        <br />
-                                      </>
-                                     */}
-                                    </Modal.Content>
-                                    <Modal.Actions>
-                                      <Button
-                                        color="green"
-                                        onClick={(e) => onUpdate(e)}
-                                      >
-                                        <Icon name="remove" /> Da
-                                      </Button>
-                                      <Button
-                                        color="red"
-                                        onClick={() => {
-                                          setCurrentQty();
-                                          setCurrentInquire();
-                                          setThirdOpen(false);
-                                        }}
-                                      >
-                                        <Icon name="checkmark" /> Nu
-                                      </Button>
-                                    </Modal.Actions>
-                                  </Modal>
-                                </Table.Cell>
-                              </Table.Row>
+                                            >
+                                              <Icon name="remove" /> Da
+                                            </Button>
+                                            <Button
+                                              color="red"
+                                              onClick={() => {
+                                                setCurrentInquire();
+                                                setOpen(false);
+                                              }}
+                                            >
+                                              <Icon name="checkmark" /> Nu
+                                            </Button>
+                                          </Modal.Actions>
+                                        </Modal>
+
+                                        <Modal
+                                          closeIcon
+                                          SecondOpen={open}
+                                          trigger={
+                                            <Button color="red">Refuza</Button>
+                                          }
+                                          onClose={() => {
+                                            setCurrentInquire();
+                                            setSecondOpen(false);
+                                          }}
+                                          onOpen={(e) => {
+                                            setCurrentInquire(inquire);
+                                            setSecondOpen(true);
+                                          }}
+                                        >
+                                          <Header content="Refuza comanda integral" />
+                                          <Modal.Content>
+                                            <p>
+                                              Esti sigur ca vrei sa refuzi
+                                              comanda integral ?
+                                            </p>
+                                          </Modal.Content>
+                                          <Modal.Actions>
+                                            <Button
+                                              color="green"
+                                              onClick={(e) => onReject(e)}
+                                            >
+                                              <Icon name="remove" /> Da
+                                            </Button>
+                                            <Button
+                                              color="red"
+                                              onClick={() => {
+                                                setCurrentInquire();
+                                                setSecondOpen(false);
+                                              }}
+                                            >
+                                              <Icon name="checkmark" /> Nu
+                                            </Button>
+                                          </Modal.Actions>
+                                        </Modal>
+
+                                        <Modal
+                                          closeIcon
+                                          thirdOpen={open}
+                                          trigger={
+                                            <Button color="orange">
+                                              Partial
+                                            </Button>
+                                          }
+                                          onClose={() => {
+                                            setCurrentInquire();
+                                            setThirdOpen(false);
+                                          }}
+                                          onOpen={() => {
+                                            setCurrentInquire(inquire);
+                                            setThirdOpen(true);
+                                          }}
+                                        >
+                                          <Header content="Accepta comanda partial" />
+                                          <Modal.Content scroll>
+                                            <>
+                                              <h2>Nume Produs : </h2>
+                                              <p>
+                                                Cantitate Ceruta :
+                                                {inquire.quantity_by_restaurant}
+                                              </p>
+                                              <p>Valoare Buc : 10 Lei</p>
+                                              <p>Valoare Totala : 120 Lei</p>
+                                              <Form>
+                                                <Form.Field>
+                                                  <Input
+                                                    label="Cantitate disponibila"
+                                                    placeholder="ex : 10"
+                                                    onBlur={(e) =>
+                                                      setCurrentQty(
+                                                        +e.target.value
+                                                      )
+                                                    }
+                                                  />
+                                                </Form.Field>
+                                              </Form>
+                                              <br />
+                                              <Divider />
+                                              <br />
+                                            </>
+                                          </Modal.Content>
+                                          <Modal.Actions>
+                                            <Button
+                                              color="green"
+                                              onClick={(e) =>
+                                                onUpdate(e, "partial")
+                                              }
+                                            >
+                                              <Icon name="remove" /> Da
+                                            </Button>
+                                            <Button
+                                              color="red"
+                                              onClick={() => {
+                                                setCurrentQty();
+                                                setCurrentInquire();
+                                                setThirdOpen(false);
+                                              }}
+                                            >
+                                              <Icon name="checkmark" /> Nu
+                                            </Button>
+                                          </Modal.Actions>
+                                        </Modal>
+                                      </Table.Cell>
+                                    </Table.Row>
+                                  </>
+                                ))}
                             </>
                           ))}
                       </Table.Body>
@@ -319,6 +318,7 @@ const Inquiries = ({
 const mapStateToProps = (state) => {
   return {
     inquires: state.products.inquiredDetails,
+    user: state.products.user,
   };
 };
 

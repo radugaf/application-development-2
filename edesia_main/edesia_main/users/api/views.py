@@ -16,6 +16,7 @@ from edesia_main.users.api.serializers import *
 
 User = get_user_model()
 
+
 class UserRegistrationView(APIView):
     permission_classes = ()
 
@@ -30,10 +31,10 @@ class UserRegistrationView(APIView):
             is_restaurant_staff = True if request.data.get('is_restaurant_staff', False) else False
 
             if not is_supplier and not is_restaurant_owner and not is_restaurant_staff:
-                return Response({'status': 'error', 'message': 'User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)    
+                return Response({'status': 'error', 'message': 'User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)
 
             if is_restaurant_owner + is_supplier + is_restaurant_staff != 1:
-                return Response({'status': 'error', 'message': 'Only one User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)    
+                return Response({'status': 'error', 'message': 'Only one User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)
 
             data = {
                 'name': name,
@@ -55,22 +56,40 @@ class UserRegistrationView(APIView):
 
 class CheckUserTypeAPIView(APIView):
     def get(self, request):
+        userData = request.user
+        print(userData.id)
+
         try:
             data = {}
+            data['user_username'] = userData.name
+            data['user_id'] = userData.id
+
             if request.user.is_supplier:
+                supplier = SupplierDetail.objects.get(user=userData.id)
+                data['user_name'] = supplier.user.username
+                print("supplier", supplier)
                 data['is_supplier'] = True
             if request.user.is_restaurant_staff:
+                staff = StaffDetail.objects.get(user=userData.id)
+                data['user_name'] = staff.user.username
+
+                print("staff", staff)
                 data['is_restaurant_staff'] = True
             if request.user.is_restaurant_owner:
+                restaurant = Restaurant.objects.get(owner=userData.id)
+                print("restaurant", restaurant.name)
+                data['user_name'] = restaurant.name
                 data['is_restaurant_owner'] = True
-            
+
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class StaffListToAddRestaurantAPIView(APIView):
     serializer_class = UserSerializer
+
     def get(self, request):
         try:
             users = User.objects.filter(is_restaurant_staff=True, restaurants_work_for__isnull=True)
@@ -79,6 +98,7 @@ class StaffListToAddRestaurantAPIView(APIView):
 
         except Exception as e:
             return Response({'status': 'error', 'message': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class AddStaffForRestaurantAPIView(APIView):
     def post(self, request):
@@ -95,6 +115,7 @@ class AddStaffForRestaurantAPIView(APIView):
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class RemoveStaffForRestaurantAPIView(APIView):
     def post(self, request):

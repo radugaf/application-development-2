@@ -52,10 +52,10 @@ const Cart = ({
       });
   }, []);
 
-  const onDeleteCart = (e, product_item_id) => {
+  const onDeleteCart = async (e, product_item_id) => {
     e.preventDefault();
 
-    DeleteCart({ product_id: product_item_id });
+    await DeleteCart({ product_id: product_item_id });
     GetAddToCart();
     window.location.href = "/cart";
 
@@ -89,9 +89,9 @@ const Cart = ({
     toastr.success("Create Order", "Order Created successfully");
   };
 
-  const acceptOrder = (e, order_id) => {
+  const acceptOrder = async (e, order_id) => {
     e.preventDefault();
-    MarkAsDelivery({ product_id: order_id });
+    await MarkAsDelivery({ product_id: order_id });
     GetRestaurantOrder();
     toastr.success("Order Delivered", "Order Mark As Delivery successfully");
     window.location.href = "/cart";

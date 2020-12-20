@@ -40,15 +40,17 @@ class Navbar extends React.Component {
           </>
         )}
 
-        <Link to="/inquiries">
-          <Menu.Item
-            name="inquiries"
-            active={activeItem === "inquiries"}
-            onClick={this.handleItemClick}
-          >
-            Inquiries
-          </Menu.Item>
-        </Link>
+        {userType && userType.is_supplier && (
+          <Link to="/inquiries">
+            <Menu.Item
+              name="inquiries"
+              active={activeItem === "inquiries"}
+              onClick={this.handleItemClick}
+            >
+              Inquiries
+            </Menu.Item>
+          </Link>
+        )}
 
         <Link to="/products">
           <Menu.Item
@@ -59,20 +61,7 @@ class Navbar extends React.Component {
             Products
           </Menu.Item>
         </Link>
-        {user && Object.keys(user).length > 0 && (
-          <Link to="/logout">
-            <Menu.Item
-              name="login"
-              active={activeItem === "logout"}
-              onClick={() => {
-                Logout();
-                window.location.href = "/login";
-              }}
-            >
-              Logout
-            </Menu.Item>
-          </Link>
-        )}
+
         {user && Object.keys(user).length <= 0 && (
           <Link to="/login">
             <Menu.Item
@@ -105,6 +94,19 @@ class Navbar extends React.Component {
             Forgot Password
           </Menu.Item>
         </Link>
+        {user && Object.keys(user).length > 0 && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              localStorage.removeItem("token");
+              window.location.href = "/login";
+
+              // Logout();
+            }}
+          >
+            Logout
+          </button>
+        )}
       </Menu>
     );
   }

@@ -29,9 +29,9 @@ const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
     GetSupplierOrder();
   }, []);
 
-  const acceptOrder = (e, order_id) => {
+  const acceptOrder = async (e, order_id) => {
     e.preventDefault();
-    MarkAsDelivery({ product_id: order_id });
+    await MarkAsDelivery({ product_id: order_id });
     GetSupplierOrder();
     toastr.success("Order Delivered", "Order Mark As Delivery successfully");
     window.location.href = "/orders";

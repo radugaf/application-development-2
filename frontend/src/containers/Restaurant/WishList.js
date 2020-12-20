@@ -25,8 +25,8 @@ const WishList = ({
     GetAddToCart();
   }, []);
 
-  const onDeleteCart = (e, product_item_id) => {
-    DeleteCart({ product_id: product_item_id });
+  const onDeleteCart = async (e, product_item_id) => {
+    await DeleteCart({ product_id: product_item_id });
     GetAddToCart();
     toastr.success(
       "Wishlist Product Deleted",
@@ -35,15 +35,16 @@ const WishList = ({
     window.location.href = "/wishlist";
   };
 
-  const UpdateQty = (e, product_item_id, price) => {
+  const UpdateQty = async (e, product_item_id, price) => {
     console.log({ value: e.target.value });
     if (+e.target.value >= 1) {
-      UpdateCart({
+      await UpdateCart({
         product_id: product_item_id,
         quantity: +e.target.value,
         price,
       });
       GetAddToCart();
+      // window.location.href = "/wishlist";
       toastr.success("WishList Qty Update", "Cantitate dorita updated");
     } else {
       toastr.error("Cantitate dorita not less than 1");
@@ -89,7 +90,10 @@ const WishList = ({
                       <p>Pret : {cart.product_original_price}</p>
                       <p>Instant Delivery : No</p>
                       <p>Qty: {cart.product_quantity}</p>
+                      <p>Editable : {cart.is_editable ? "Yes" : "No"}</p>
+
                       <Input
+                        disabled={!cart.is_editable}
                         label="Cantitate dorita"
                         placeholder="10 Buc"
                         onBlur={(e) => {

@@ -20,6 +20,8 @@ export const ProductFetch = () => {
         tokenConfig(getState)
       );
       console.log({ productData });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -51,7 +53,9 @@ export const GetAddToCart = () => {
         tokenConfig(getState)
       );
       console.log({ CartProduct });
+
       dispatch({ type: "ADD_TO_CART", payload: CartProduct.data.data });
+      await checkUserType(dispatch, getState);
       dispatch({
         type: "STOP_LOADING",
       });
@@ -82,6 +86,8 @@ export const AddToCart = (data) => {
       );
       console.log({ addToCartProduct });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -115,6 +121,8 @@ export const UpdateCart = (data) => {
       GetAddToCart();
       console.log({ updateCartProduct });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -143,11 +151,15 @@ export const DeleteCart = (data) => {
         },
         tokenConfig(getState)
       );
+
       dispatch({
         type: "STOP_LOADING",
       });
       GetAddToCart();
+      await checkUserType(dispatch, getState);
+
       console.log({ deleteCartProduct });
+      window.location.href = "/cart";
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
     } catch (error) {
       console.log({ error });
@@ -176,6 +188,7 @@ export const GetInquires = () => {
       );
       console.log({ Inquires });
       dispatch({ type: "GET_INQUIRES", payload: Inquires.data.data });
+      await checkUserType(dispatch, getState);
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -204,6 +217,8 @@ export const AddInquiry = (data) => {
       GetInquires();
       console.log({ addInquire });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -237,10 +252,13 @@ export const UpdateInquiry = (data) => {
       );
       GetInquires();
       console.log({ updateInquiry });
+      await checkUserType(dispatch, getState);
+
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
       dispatch({
         type: "STOP_LOADING",
       });
+      window.location.href = "/inquiries";
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -270,9 +288,12 @@ export const DeclineInquiry = (data) => {
       GetInquires();
       console.log({ declineInquiry });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
+      window.location.href = "/inquiries";
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -303,6 +324,8 @@ export const GetSupplierOrder = () => {
         type: "GET_SUPPLIER_ORDERS",
         payload: supplierOrders.data.data,
       });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -333,6 +356,8 @@ export const GetRestaurantOrder = () => {
         type: "GET_RESTAURANT_ORDERS",
         payload: restaurantOrders.data.data,
       });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -366,6 +391,8 @@ export const MarkAsDelivery = (data) => {
       GetSupplierOrder();
       console.log({ markAsADelivery });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -397,6 +424,8 @@ export const PlaceOrder = (data) => {
       );
       console.log({ placeOrder });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      await checkUserType(dispatch, getState);
+
       dispatch({
         type: "STOP_LOADING",
       });
@@ -429,21 +458,32 @@ export const SetToken = (data) => {
       });
       console.log({ token });
       localStorage.setItem("token", token.data.access);
-      toastr.success("Login Successfully", "Login Successfully");
-      const userType = await axios.get(
-        `${BACKEND_URL}${requests.GET_CHECK_USER_TYPE}`,
-        tokenConfig(getState)
-      );
-      dispatch({ type: "USER_TYPE", payload: userType.data.data });
+
+      await checkUserType(dispatch, getState);
       dispatch({
         type: "STOP_LOADING",
       });
-      window.location.href = "/";
+      toastr.success("Login Successfully", "Login Successfully");
+      window.location.href = "/products";
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
     }
   };
+};
+
+export const checkUserType = async (dispatch, getState) => {
+  try {
+    const userType = await axios.get(
+      `${BACKEND_URL}${requests.GET_CHECK_USER_TYPE}`,
+      tokenConfig(getState)
+    );
+    console.log({ userType });
+    dispatch({ type: "USER_TYPE", payload: userType.data.data });
+  } catch (error) {
+    console.log({ error });
+    errorHandle(error, dispatch);
+  }
 };
 
 export const Logout = () => {
@@ -452,6 +492,7 @@ export const Logout = () => {
     dispatch({
       type: "LOGOUT",
     });
+    window.location.href = "/login";
   };
 };
 
