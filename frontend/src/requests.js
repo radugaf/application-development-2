@@ -4,6 +4,7 @@ export const BACKEND_URL = `${URL}/api/v1/`;
 export default {
   //   Auth
   GET_TOKEN: "token/",
+  GET_CHECK_USER_TYPE: "check-user-type/",
   //   Product
   SUPPLIER_PRODUCT_LIST: "product-list/",
   SUPPLIER_ADD_PRODUCT_IN_CART: "add-product-in-cart/",
@@ -24,4 +25,9 @@ export default {
 };
 
 export const TOKEN =
-  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA4MjI4OTk1LCJqdGkiOiJkZjQ4ODZlNTViNWM0OWQ5ODA2NzRjOTMzNGQ4NWIyNCIsInVzZXJfaWQiOjJ9.cxnvekZmwCQ-mzgYAtyqqrF1QJU7tM_xKJtL4Q8hEaY";
+  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjEyNjQwNzQzLCJqdGkiOiIyMzNjYzExMTQyOTY0MWZmYmNkMGExMWQ4YWU4ODI4MSIsInVzZXJfaWQiOjR9.IHx5OirlN7MMQiXlK_I6u71xrIvD1rOQEwfau_TX_8";
+
+export const CREDENTIALS = {
+  username: "rest1",
+  password: "Shreeji@1",
+};

@@ -1,156 +1,165 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Grid, Image, Input, Divider, Button } from "semantic-ui-react";
+import { connect } from "react-redux";
+import { toastr } from "react-redux-toastr";
 
+import {
+  SetToken,
+  GetAddToCart,
+  DeleteCart,
+  UpdateCart,
+  AddInquiry,
+} from "../../redux/actions/products";
+import { URL, CREDENTIALS } from "../../requests";
 
-const WishList = () => {
-  const [wishList, setWishList] = useState([]);
-
-  const [formData, setFormData] = useState({
-    product_item_id: 0,
-    quantity: 0,
-    price: 0,
-  });
-
-  const { product_item_id, quantity, price } = formData;
-
+const WishList = ({
+  carts,
+  GetAddToCart,
+  DeleteCart,
+  UpdateCart,
+  SetToken,
+  AddInquiry,
+}) => {
   useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjExOTA5MzE5LCJqdGkiOiJiZDg2MDVmMDQ5ZTg0OTFkODY2NzM4ZTUyM2VkZWU4MCIsInVzZXJfaWQiOjF9.V-oLJKAsRYCbon1fm_zUpWYalEFI9QrNykaMNiK_T6E`,
-      },
-    };
-
-    axios
-      .get(`http://localhost:8000/api/v1/product-list-in-cart/`, config)
-      .then((res) => {
-        const data = res.data.data;
-        setWishList(data.not_instant_delivery_items);
-        console.log(
-          "res.data========>",
-          res.data.data.not_instant_delivery_items
-        );
-
-        console.log("wishList=========>", wishList);
-      })
-      .catch((err) => {});
+    GetAddToCart();
   }, []);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjExOTA5MzE5LCJqdGkiOiJiZDg2MDVmMDQ5ZTg0OTFkODY2NzM4ZTUyM2VkZWU4MCIsInVzZXJfaWQiOjF9.V-oLJKAsRYCbon1fm_zUpWYalEFI9QrNykaMNiK_T6E`,
-      },
-    };
-
-    axios
-      .post(
-        "http://localhost:8000/api/v1/remove-product-in-cart/",
-        {
-          product_item_id,
-        },
-        config
-      )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const onDeleteCart = (e, product_item_id) => {
+    DeleteCart({ product_id: product_item_id });
+    GetAddToCart();
+    toastr.success(
+      "Wishlist Product Deleted",
+      "Wishlist product successfully deleted"
+    );
+    window.location.href = "/wishlist";
   };
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onFormSubmit = (e) => {
-    e.preventDefault();
-
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjExOTA5MzE5LCJqdGkiOiJiZDg2MDVmMDQ5ZTg0OTFkODY2NzM4ZTUyM2VkZWU4MCIsInVzZXJfaWQiOjF9.V-oLJKAsRYCbon1fm_zUpWYalEFI9QrNykaMNiK_T6E`,
-      },
-    };
-
-    axios
-      .post(
-        "http://localhost:8000/api/v1/update-product-in-cart/",
-        {
-          product_item_id,
-          quantity,
-          price,
-        },
-        config
-      )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
+  const UpdateQty = (e, product_item_id, price) => {
+    console.log({ value: e.target.value });
+    if (+e.target.value >= 1) {
+      UpdateCart({
+        product_id: product_item_id,
+        quantity: +e.target.value,
+        price,
       });
+      GetAddToCart();
+      toastr.success("WishList Qty Update", "Cantitate dorita updated");
+    } else {
+      toastr.error("Cantitate dorita not less than 1");
+    }
   };
 
+  const onFormSubmit = (e, product_items_id) => {
+    e.preventDefault();
+    AddInquiry({ product_id: [product_items_id] });
+    toastr.success("Add Product in Inquiries", "Product added successfully");
+  };
 
   return (
     <>
-    <Grid columns={1} textAlign='center'>
-      <Grid.Row>
-        <Grid.Column width="14">
-            <Grid columns={3} textAlign='left'>
-              <Grid.Row>
-                <Grid.Column width="1" textAlign='center' verticalAlign='middle' >
-                  <a href='#'>Delete</a>
-                </Grid.Column>
-                <Grid.Column width="2" >
-                  <Image src='https://s13emagst.akamaized.net/products/697/696129/images/res_e87ca3516174a17de027ee3575fe4d42.jpg' size='medium' />
-                </Grid.Column>
-                <Grid.Column width="13" stretched>
-                  <p>Nume : Nume.produs</p>
-                  <p>Cantitate : Cantitate.furnizor.maxima</p>
-                  <p>Pret : Pret.Produs</p>
-                  <p>Instant Delivery : Instant.Delivery.False</p>
-                  <Input label='Cantitate dorita' placeholder='10 Buc' />
-                  <br/>
-                  <Button color="orange">Cere Oferta</Button>
-                </Grid.Column>
-              </Grid.Row>
+      <Grid columns={1} textAlign="center">
+        <Grid.Row>
+          <Grid.Column width="14">
+            <Grid columns={3} textAlign="left">
+              {carts &&
+                carts.not_instant_delivery_items &&
+                carts.not_instant_delivery_items.map((cart) => (
+                  <Grid.Row>
+                    <Grid.Column
+                      width="1"
+                      textAlign="center"
+                      verticalAlign="middle"
+                    >
+                      <button
+                        onClick={(e) => onDeleteCart(e, cart.product_item_id)}
+                      >
+                        Delete
+                      </button>
+                    </Grid.Column>
+                    <Grid.Column width="2">
+                      <Image
+                        src={`${URL}${cart.product_image_url}`}
+                        size="medium"
+                      />
+                    </Grid.Column>
+                    <Grid.Column width="13" stretched>
+                      <p>Nume : {cart.product_title}</p>
+                      <p>Cantitate : {cart.product_total_stock || ""}</p>
+                      <p>Pret : {cart.product_original_price}</p>
+                      <p>Instant Delivery : No</p>
+                      <p>Qty: {cart.product_quantity}</p>
+                      <Input
+                        label="Cantitate dorita"
+                        placeholder="10 Buc"
+                        onBlur={(e) => {
+                          UpdateQty(
+                            e,
+                            cart.product_item_id,
+                            cart.product_price
+                          );
+                        }}
+                      />
+                      <br />
+                      <Button
+                        color="orange"
+                        onClick={(e) => onFormSubmit(e, cart.product_item_id)}
+                      >
+                        Cere Oferta
+                      </Button>
+                    </Grid.Column>
+                  </Grid.Row>
+                ))}
 
-              <Grid.Row>
+              {/* <Grid.Row>
                 <Grid.Column width={16}>
-                  <Divider/>
+                  <Divider />
                 </Grid.Column>
               </Grid.Row>
 
-
               <Grid.Row>
-                <Grid.Column width="1" textAlign='center' verticalAlign='middle' >
-                  <a href='#'>Delete</a>
+                <Grid.Column
+                  width="1"
+                  textAlign="center"
+                  verticalAlign="middle"
+                >
+                  <a href="#">Delete</a>
                 </Grid.Column>
-                <Grid.Column width="2" >
-                  <Image src='https://react.semantic-ui.com/images/wireframe/image.png' size='medium' />
+                <Grid.Column width="2">
+                  <Image
+                    src="https://react.semantic-ui.com/images/wireframe/image.png"
+                    size="medium"
+                  />
                 </Grid.Column>
                 <Grid.Column width="13" stretched>
                   <p>Nume : Nume.produs</p>
                   <p>Cantitate : Cantitate.furnizor.maxima</p>
                   <p>Pret : Pret.Produs</p>
                   <p>Instant Delivery : Instant.Delivery.False</p>
-                  <Input label='Cantitate dorita' placeholder='10 Buc' />
-                  <br/>
+                  <Input label="Cantitate dorita" placeholder="10 Buc" />
+                  <br />
                   <Button color="orange">Cere Oferta</Button>
                 </Grid.Column>
               </Grid.Row>
-
-
-
+             */}
             </Grid>
           </Grid.Column>
-      </Grid.Row>
-    </Grid>
+        </Grid.Row>
+      </Grid>
     </>
   );
 };
 
-export default WishList;
+const mapStateToProps = (state) => {
+  return {
+    carts: state.products.cartsDetails,
+  };
+};
+
+export default connect(mapStateToProps, {
+  GetAddToCart,
+  SetToken,
+  DeleteCart,
+  UpdateCart,
+  AddInquiry,
+})(WishList);

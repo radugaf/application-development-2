@@ -10,6 +10,7 @@ export const ProductFetch = () => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -19,7 +20,10 @@ export const ProductFetch = () => {
         tokenConfig(getState)
       );
       console.log({ productData });
-      dispatch({ type: "GET_PRODUCTS", payload: productData.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
+      dispatch({ type: "GET_PRODUCTS", payload: productData.data.data });
     } catch (error) {
       console.log({ error });
 
@@ -37,6 +41,7 @@ export const GetAddToCart = () => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -46,7 +51,10 @@ export const GetAddToCart = () => {
         tokenConfig(getState)
       );
       console.log({ CartProduct });
-      dispatch({ type: "ADD_TO_CART", payload: CartProduct.data });
+      dispatch({ type: "ADD_TO_CART", payload: CartProduct.data.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -60,6 +68,7 @@ export const AddToCart = (data) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -73,6 +82,9 @@ export const AddToCart = (data) => {
       );
       console.log({ addToCartProduct });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -86,6 +98,7 @@ export const UpdateCart = (data) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -99,8 +112,12 @@ export const UpdateCart = (data) => {
         },
         tokenConfig(getState)
       );
+      GetAddToCart();
       console.log({ updateCartProduct });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -114,6 +131,7 @@ export const DeleteCart = (data) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -125,6 +143,10 @@ export const DeleteCart = (data) => {
         },
         tokenConfig(getState)
       );
+      dispatch({
+        type: "STOP_LOADING",
+      });
+      GetAddToCart();
       console.log({ deleteCartProduct });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
     } catch (error) {
@@ -143,6 +165,7 @@ export const GetInquires = () => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -152,7 +175,7 @@ export const GetInquires = () => {
         tokenConfig(getState)
       );
       console.log({ Inquires });
-      dispatch({ type: "GET_INQUIRES", payload: Inquires.data });
+      dispatch({ type: "GET_INQUIRES", payload: Inquires.data.data });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -166,6 +189,7 @@ export const AddInquiry = (data) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -177,8 +201,12 @@ export const AddInquiry = (data) => {
         },
         tokenConfig(getState)
       );
+      GetInquires();
       console.log({ addInquire });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -192,6 +220,7 @@ export const UpdateInquiry = (data) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -206,8 +235,12 @@ export const UpdateInquiry = (data) => {
         },
         tokenConfig(getState)
       );
+      GetInquires();
       console.log({ updateInquiry });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -221,6 +254,7 @@ export const DeclineInquiry = (data) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -233,8 +267,12 @@ export const DeclineInquiry = (data) => {
         },
         tokenConfig(getState)
       );
+      GetInquires();
       console.log({ declineInquiry });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -250,6 +288,7 @@ export const GetSupplierOrder = () => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -259,7 +298,14 @@ export const GetSupplierOrder = () => {
         tokenConfig(getState)
       );
       console.log({ supplierOrders });
-      dispatch({ type: "GET_SUPPLIER_ORDERS", payload: supplierOrders.data });
+
+      dispatch({
+        type: "GET_SUPPLIER_ORDERS",
+        payload: supplierOrders.data.data,
+      });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -273,6 +319,7 @@ export const GetRestaurantOrder = () => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -284,7 +331,10 @@ export const GetRestaurantOrder = () => {
       console.log({ restaurantOrders });
       dispatch({
         type: "GET_RESTAURANT_ORDERS",
-        payload: restaurantOrders.data,
+        payload: restaurantOrders.data.data,
+      });
+      dispatch({
+        type: "STOP_LOADING",
       });
     } catch (error) {
       console.log({ error });
@@ -294,11 +344,12 @@ export const GetRestaurantOrder = () => {
 };
 
 // Mark as Delivery
-export const MarkAdDelivery = (data) => {
+export const MarkAsDelivery = (data) => {
   return async (dispatch, getState) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -307,12 +358,17 @@ export const MarkAdDelivery = (data) => {
         `${BACKEND_URL}${requests.MARK_AS_DELIVERY_SUPPLIER_ORDER}`,
         {
           //TODO: This is in array
-          product_items: data.product_id,
+          product_items: [data.product_id],
         },
         tokenConfig(getState)
       );
+      GetRestaurantOrder();
+      GetSupplierOrder();
       console.log({ markAsADelivery });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -326,6 +382,7 @@ export const PlaceOrder = (data) => {
     // Loading
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -340,6 +397,9 @@ export const PlaceOrder = (data) => {
       );
       console.log({ placeOrder });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
@@ -358,6 +418,7 @@ export const SetToken = (data) => {
     console.log({ data });
     dispatch({
       type: "PRODUCT_LOADING",
+      payload: true,
     });
     //   Get Token from state
 
@@ -368,12 +429,29 @@ export const SetToken = (data) => {
       });
       console.log({ token });
       localStorage.setItem("token", token.data.access);
-      console.log({ token: localStorage.getItem("token") });
-      // dispatch({ type: "TOKEN", payload: token.data });
+      toastr.success("Login Successfully", "Login Successfully");
+      const userType = await axios.get(
+        `${BACKEND_URL}${requests.GET_CHECK_USER_TYPE}`,
+        tokenConfig(getState)
+      );
+      dispatch({ type: "USER_TYPE", payload: userType.data.data });
+      dispatch({
+        type: "STOP_LOADING",
+      });
+      window.location.href = "/";
     } catch (error) {
       console.log({ error });
       errorHandle(error, dispatch);
     }
+  };
+};
+
+export const Logout = () => {
+  return async (dispatch, getState) => {
+    localStorage.removeItem("token");
+    dispatch({
+      type: "LOGOUT",
+    });
   };
 };
 
@@ -386,6 +464,25 @@ export const errorHandle = (error, dispatch) => {
     error &&
     error.response &&
     error.response.data &&
+    error.response.data.code &&
+    error.response.data.code === "token_not_valid"
+  ) {
+    localStorage.removeItem("token");
+    toastr.error(
+      (error.response.data.messages &&
+        error.response.data.messages[0] &&
+        error.response.data.messages[0].message) ||
+        error.response.data.detail
+    );
+    dispatch({
+      type: "AUTH_ERROR",
+      payload: { error: error.response.data },
+    });
+    window.location.href = "/login";
+  } else if (
+    error &&
+    error.response &&
+    error.response.data &&
     (error.response.data.messages || error.response.data.detail)
   )
     toastr.error(
@@ -395,8 +492,12 @@ export const errorHandle = (error, dispatch) => {
         error.response.data.detail
     );
   dispatch({
-    type: "AUTH_ERROR",
-    payload: error,
+    type: "PRODUCT_LOADING",
+    payload: false,
+  });
+  dispatch({
+    type: "ERROR",
+    payload: { error: error.response.data },
   });
 };
 
@@ -404,7 +505,7 @@ export const errorHandle = (error, dispatch) => {
 export const tokenConfig = (getState) => {
   // const token = TOKEN;
   // const token = getState().products.token || TOKEN;
-  const token = localStorage.getItem("token") || TOKEN;
+  const token = localStorage.getItem("token");
   console.log({ tokenConfig: token });
 
   // Headers
@@ -416,6 +517,8 @@ export const tokenConfig = (getState) => {
   // if Token , add to headers config
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
+  } else {
+    window.location.href = "/login";
   }
   return config;
 };

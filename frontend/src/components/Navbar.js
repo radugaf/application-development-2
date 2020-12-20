@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Menu, Dropdown } from "semantic-ui-react";
+import { Logout } from "../redux/actions/products";
 
+import { connect } from "react-redux";
 class Navbar extends React.Component {
   state = {};
 
@@ -9,86 +11,108 @@ class Navbar extends React.Component {
 
   render() {
     const { activeItem } = this.state;
-
+    const { user } = this.props;
+    const userType = user;
+    console.log({ user });
     return (
       <Menu>
+        {userType && !userType.is_supplier && (
+          <>
+            <Link to="/cart">
+              <Menu.Item
+                name="cart"
+                active={activeItem === "cart"}
+                onClick={this.handleItemClick}
+              >
+                Cart
+              </Menu.Item>
+            </Link>
 
-        <Link to="/cart">
-          <Menu.Item
-          name='cart'
-          active={activeItem === 'cart'}
-          onClick={this.handleItemClick}
-          >
-          Cart
-          </Menu.Item>
-        </Link>
-
-        <Link to="/wishlist">
-          <Menu.Item
-          name='wishlist'
-          active={activeItem === 'wishlist'}
-          onClick={this.handleItemClick}
-          >
-          WishList
-          </Menu.Item>
-        </Link>
+            <Link to="/wishlist">
+              <Menu.Item
+                name="wishlist"
+                active={activeItem === "wishlist"}
+                onClick={this.handleItemClick}
+              >
+                WishList
+              </Menu.Item>
+            </Link>
+          </>
+        )}
 
         <Link to="/inquiries">
           <Menu.Item
-          name='inquiries'
-          active={activeItem === 'inquiries'}
-          onClick={this.handleItemClick}
+            name="inquiries"
+            active={activeItem === "inquiries"}
+            onClick={this.handleItemClick}
           >
-          Inquiries
+            Inquiries
           </Menu.Item>
         </Link>
 
         <Link to="/products">
           <Menu.Item
-          name='products'
-          active={activeItem === 'products'}
-          onClick={this.handleItemClick}
+            name="products"
+            active={activeItem === "products"}
+            onClick={this.handleItemClick}
           >
-          Products
+            Products
           </Menu.Item>
         </Link>
-
-
-        <Link to="/login">
-          <Menu.Item
-          name='login'
-          active={activeItem === 'login'}
-          onClick={this.handleItemClick}
-          >
-          Login
-          </Menu.Item>
-        </Link>
-
-
-        <Link to="/orders">
-          <Menu.Item
-          name='orders'
-          active={activeItem === 'orders'}
-          onClick={this.handleItemClick}
-          >
-          Orders
-          </Menu.Item>
-        </Link>
-
+        {user && Object.keys(user).length > 0 && (
+          <Link to="/logout">
+            <Menu.Item
+              name="login"
+              active={activeItem === "logout"}
+              onClick={() => {
+                Logout();
+                window.location.href = "/login";
+              }}
+            >
+              Logout
+            </Menu.Item>
+          </Link>
+        )}
+        {user && Object.keys(user).length <= 0 && (
+          <Link to="/login">
+            <Menu.Item
+              name="login"
+              active={activeItem === "login"}
+              onClick={this.handleItemClick}
+            >
+              Login
+            </Menu.Item>
+          </Link>
+        )}
+        {userType && userType.is_supplier && (
+          <Link to="/orders">
+            <Menu.Item
+              name="orders"
+              active={activeItem === "orders"}
+              onClick={this.handleItemClick}
+            >
+              Orders
+            </Menu.Item>
+          </Link>
+        )}
 
         <Link to="/forgot-password">
           <Menu.Item
-          name='ForgotPassword'
-          active={activeItem === 'ForgotPassword'}
-          onClick={this.handleItemClick}
+            name="ForgotPassword"
+            active={activeItem === "ForgotPassword"}
+            onClick={this.handleItemClick}
           >
-          Forgot Password
+            Forgot Password
           </Menu.Item>
         </Link>
       </Menu>
-
     );
   }
 }
 
-export default Navbar;
+const mapStateToProps = (state) => {
+  return {
+    user: state.products.user,
+  };
+};
+export default connect(mapStateToProps, {})(Navbar);

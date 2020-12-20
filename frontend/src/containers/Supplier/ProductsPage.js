@@ -2,35 +2,44 @@ import React, { useState, useEffect } from "react";
 import { Grid, Card, Image, Button } from "semantic-ui-react";
 import axios from "axios";
 import { connect } from "react-redux";
+import { toastr } from "react-redux-toastr";
 
 import Addproductmodal from "./addproductmodal.js";
+
 import {
   ProductFetch,
   AddToCart,
   SetToken,
 } from "../../redux/actions/products";
 import TableProducts from "../../components/TableProducts.js";
-import { URL } from "../../requests";
+import { URL, CREDENTIALS } from "../../requests";
 
-const ProductsPage = ({ ProductFetch, AddToCart, SetToken, products }) => {
+const ProductsPage = ({
+  ProductFetch,
+  AddToCart,
+  SetToken,
+  products,
+  authErrors,
+}) => {
   // const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({
     product_id: 0, //here is product id is given by default
   });
-
+  console.log({ formData });
   const { product_id } = formData;
 
   useEffect(() => {
-    SetToken({ username: "rest", password: "Shreeji@1" });
     ProductFetch();
   }, []);
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  const onSubmit = (e, product_id, type) => {
     e.preventDefault();
-    AddToCart({ product_id });
+    AddToCart({ product_id: product_id });
+    toastr.success(`Add To ${type}`, `Add To ${type} successfully added `);
+
     // const config = {
     //   headers: {
     //     "Content-Type": "application/json",
@@ -53,6 +62,7 @@ const ProductsPage = ({ ProductFetch, AddToCart, SetToken, products }) => {
     //     console.log(err);
     //   });
   };
+
   console.log({ products });
   return (
     <Grid columns={1} textAlign="center">
@@ -88,23 +98,26 @@ const ProductsPage = ({ ProductFetch, AddToCart, SetToken, products }) => {
                               Instant Delivery :{" "}
                               {product.instant_delivery ? "Yes" : "No"}
                             </p>
-
-                            {product.instant_delivery ? (
-                              <Button
-                                color="teal"
-                                onClick={(e) => {
-                                  setFormData({
-                                    ...formData,
-                                    product_id: product.id,
-                                  });
-                                  onSubmit(e);
-                                }}
-                              >
-                                Adauga in Cos
-                              </Button>
-                            ) : (
-                              <Button color="orange">Adauga in Wishlist</Button>
-                            )}
+                            <Button
+                              color={
+                                product.instant_delivery ? "teal" : "orange"
+                              }
+                              onClick={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  product_id: product.id,
+                                });
+                                onSubmit(
+                                  e,
+                                  product.id,
+                                  product.instant_delivery ? "Cart" : "Wishlist"
+                                );
+                              }}
+                            >
+                              {product.instant_delivery
+                                ? "Adauga in Cos"
+                                : "Adauga in Wishlist"}
+                            </Button>
                           </Grid.Column>
                         </Grid.Row>
                       </Grid>
@@ -211,6 +224,7 @@ const ProductsPage = ({ ProductFetch, AddToCart, SetToken, products }) => {
 const mapStateToProps = (state) => {
   return {
     products: state.products.productsDetails,
+    authErrors: state.products.error,
   };
 };
 export default connect(mapStateToProps, {

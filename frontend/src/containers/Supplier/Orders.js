@@ -1,119 +1,156 @@
 import React, { useState, useEffect } from "react";
 import TableProducts from "../../components/TableProducts.js";
 import axios from "axios";
-import { Form, Button, Table, Grid, Icon, Modal, Header, Divider, Input } from "semantic-ui-react";
+import {
+  Form,
+  Button,
+  Table,
+  Grid,
+  Icon,
+  Modal,
+  Header,
+  Divider,
+  Input,
+} from "semantic-ui-react";
 
-const Orders = () => {
-  const [products, setProducts] = useState([]);
-  const [formData, setFormData] = useState({
-    product_item_id: 0, //here is product id is given by default
-  });
+import { connect } from "react-redux";
+import { toastr } from "react-redux-toastr";
 
-  const { product_item_id } = formData;
+import { GetSupplierOrder, MarkAsDelivery } from "../../redux/actions/products";
+import { URL, CREDENTIALS } from "../../requests";
 
+const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
+  // const [formData, setFormData] = useState({
+  //   product_item_id: 0, //here is product id is given by default
+  // });
+
+  const userType = user;
   useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjExOTA5MzE5LCJqdGkiOiJiZDg2MDVmMDQ5ZTg0OTFkODY2NzM4ZTUyM2VkZWU4MCIsInVzZXJfaWQiOjF9.V-oLJKAsRYCbon1fm_zUpWYalEFI9QrNykaMNiK_T6E`,
-      },
-    };
-
-    axios
-      .get(
-        `http://localhost:8000/api/v1/supplier-pending-product-list/`,
-        config
-      )
-      .then((res) => {
-        setProducts(res.data.data);
-      })
-      .catch((err) => {});
+    GetSupplierOrder();
   }, []);
+
+  const acceptOrder = (e, order_id) => {
+    e.preventDefault();
+    MarkAsDelivery({ product_id: order_id });
+    GetSupplierOrder();
+    toastr.success("Order Delivered", "Order Mark As Delivery successfully");
+    window.location.href = "/orders";
+  };
 
   return (
     <>
-    <Grid columns={1} textAlign='center' divided>
-      <Grid.Row width='14'>
-        <Grid.Column width="14" >
+      <Grid columns={1} textAlign="center" divided>
+        <Grid.Row width="14">
+          <Grid.Column width="14">
+            <Table celled>
+              {userType && userType.is_supplier && (
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Nume restaurant</Table.HeaderCell>
+                    <Table.HeaderCell>Data Comanda</Table.HeaderCell>
+                    <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
+                    <Table.HeaderCell>Timp ramas</Table.HeaderCell>
+                    <Table.HeaderCell>Valoare T.V.A</Table.HeaderCell>
+                    <Table.HeaderCell>Accepta Comanda</Table.HeaderCell>
+                    <Table.HeaderCell>Refuza Comanda</Table.HeaderCell>
+                    <Table.HeaderCell>Vezi Comanda</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+              )}
+              {userType && !userType.is_supplier && (
+                <Table.Body>
+                  {orders &&
+                    orders.map((order) => {
+                      if (!order.is_delivered) {
+                        return (
+                          <Table.Row>
+                            <Table.Cell warning>
+                              {order.product_title}
+                            </Table.Cell>
+                            <Table.Cell warning></Table.Cell>
+                            {/* TODO:Order Value  */}
+                            <Table.Cell warning></Table.Cell>
+                            <Table.Cell warning></Table.Cell>
+                            <Table.Cell warning></Table.Cell>
+                            <Table.Cell warning textAlign="center">
+                              <Button
+                                color="green"
+                                onClick={(e) =>
+                                  acceptOrder(e, order.product_item_id)
+                                }
+                              >
+                                Accepta
+                              </Button>
+                            </Table.Cell>
+                            <Table.Cell warning textAlign="center">
+                              <Button color="red">Refuza</Button>
+                            </Table.Cell>
+                            <Table.Cell warning textAlign="center">
+                              <Button>Vezi Detalii</Button>
+                            </Table.Cell>
+                          </Table.Row>
+                        );
+                      }
+                    })}
 
+                  <Table.Row>
+                    <Table.Cell positive colspan="8" textAlign="center">
+                      <Table celled>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell>Nume Produs</Table.HeaderCell>
+                            <Table.HeaderCell>Cantitate</Table.HeaderCell>
+                            <Table.HeaderCell>Pret Buc</Table.HeaderCell>
+                            <Table.HeaderCell>Valoare TVA</Table.HeaderCell>
+                            <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
+                          </Table.Row>
+                        </Table.Header>
 
-
-          <Table celled>
-
-           <Table.Header>
-             <Table.Row>
-               <Table.HeaderCell>Nume restaurant</Table.HeaderCell>
-               <Table.HeaderCell>Data Comanda</Table.HeaderCell>
-               <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
-               <Table.HeaderCell>Timp ramas</Table.HeaderCell>
-               <Table.HeaderCell>Valoare T.V.A</Table.HeaderCell>
-               <Table.HeaderCell>Accepta Comanda</Table.HeaderCell>
-               <Table.HeaderCell>Refuza Comanda</Table.HeaderCell>
-               <Table.HeaderCell>Vezi Comanda</Table.HeaderCell>
-             </Table.Row>
-           </Table.Header>
-
-           <Table.Body>
-
-             <Table.Row>
-               <Table.Cell warning>Edesia</Table.Cell>
-               <Table.Cell warning>12.02.2020</Table.Cell>
-               <Table.Cell warning>450 Ron</Table.Cell>
-               <Table.Cell warning>4 Ore</Table.Cell>
-               <Table.Cell warning>100 Ron</Table.Cell>
-               <Table.Cell warning textAlign='center' ><Button color='green'>Accepta</Button></Table.Cell>
-               <Table.Cell warning textAlign='center' ><Button color='red'>Refuza</Button></Table.Cell>
-               <Table.Cell warning textAlign='center' ><Button>Vezi Detalii</Button></Table.Cell>
-             </Table.Row>
-
-             <Table.Row>
-
-               <Table.Cell positive colspan='8' textAlign='center' >
-
-                 <Table celled>
-
-                  <Table.Header>
-
-                    <Table.Row>
-                      <Table.HeaderCell>Nume Produs</Table.HeaderCell>
-                      <Table.HeaderCell>Cantitate</Table.HeaderCell>
-                      <Table.HeaderCell>Pret Buc</Table.HeaderCell>
-                      <Table.HeaderCell>Valoare TVA</Table.HeaderCell>
-                      <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
-                    </Table.Row>
-
-                  </Table.Header>
-
-                  <Table.Body>
-                    <Table.Row>
-                      <Table.Cell positive>Paste Barilla</Table.Cell>
-                      <Table.Cell positive>12 KG</Table.Cell>
-                      <Table.Cell positive>5 KG</Table.Cell>
-                      <Table.Cell positive>10 Lei</Table.Cell>
-                      <Table.Cell positive>50 Lei</Table.Cell>
-                    </Table.Row>
+                        <Table.Body>
+                          {orders &&
+                            orders.map((order) => {
+                              if (order.is_delivered) {
+                                return (
+                                  <Table.Row>
+                                    <Table.Cell positive>
+                                      {order.product_title}
+                                    </Table.Cell>
+                                    <Table.Cell positive>
+                                      {/* TODO:Amount */}
+                                    </Table.Cell>
+                                    <Table.Cell positive>
+                                      {order.product_price}
+                                    </Table.Cell>
+                                    <Table.Cell positive></Table.Cell>
+                                    {/* TODO:Order Value */}
+                                    <Table.Cell positive></Table.Cell>
+                                  </Table.Row>
+                                );
+                              }
+                            })}
+                        </Table.Body>
+                      </Table>
+                    </Table.Cell>
+                  </Table.Row>
+                  <Table.Row></Table.Row>
                 </Table.Body>
-              </Table>
-
-
-
-
-
-              </Table.Cell>
-             </Table.Row>
-             <Table.Row>
-             </Table.Row>
-
-
-           </Table.Body>
-         </Table>
-
-
-
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+              )}
+            </Table>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </>
   );
 };
 
-export default Orders;
+const mapStateToProps = (state) => {
+  return {
+    carts: state.products.cartsDetails,
+    orders: state.products.supplierOrdersDetails,
+    user: state.products.user,
+  };
+};
+export default connect(mapStateToProps, {
+  GetSupplierOrder,
+  MarkAsDelivery,
+})(Orders);

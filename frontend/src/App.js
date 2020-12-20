@@ -9,6 +9,7 @@ import TestComponent from "./components/TestComponent";
 
 import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
+import PrivateRoute from "./components/PrivateRoute";
 
 // Containers
 import Home from "./containers/Home";

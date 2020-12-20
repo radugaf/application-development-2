@@ -4,8 +4,8 @@ const initialState = {
   isLoading: false,
   redirect: false,
   productsDetails: [],
-  cartsDetails: [],
-  inquiredDetails: [],
+  cartsDetails: {},
+  inquiredDetails: {},
   supplierOrdersDetails: [],
   restaurantOrdersDetails: [],
   error: {},
@@ -14,6 +14,8 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case "USER_TYPE":
+      return { ...state, user: action.payload };
     case "PRODUCT_LOADING":
       return { ...state, isLoading: action.payload || true };
     case "STOP_LOADING":
@@ -28,6 +30,20 @@ export default function (state = initialState, action) {
       return { ...state, supplierOrdersDetails: action.payload };
     case "GET_RESTAURANT_ORDERS":
       return { ...state, restaurantOrdersDetails: action.payload };
+    case "ERROR":
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case "LOGOUT":
+      return {
+        ...state,
+        token: null,
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      };
     case "AUTH_ERROR":
       return {
         ...state,
@@ -35,6 +51,7 @@ export default function (state = initialState, action) {
         user: null,
         isAuthenticated: false,
         isLoading: false,
+        error: action.payload,
       };
 
     default:
