@@ -91,7 +91,6 @@ const WishList = ({
                       <p>Instant Delivery : No</p>
                       <p>Qty: {cart.product_quantity}</p>
                       <p>Editable : {cart.is_editable ? "Yes" : "No"}</p>
-
                       <Input
                         disabled={!cart.is_editable}
                         label="Cantitate dorita"
