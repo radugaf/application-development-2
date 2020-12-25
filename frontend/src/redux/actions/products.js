@@ -218,7 +218,7 @@ export const AddInquiry = (data) => {
       console.log({ addInquire });
       // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
       await checkUserType(dispatch, getState);
-
+       toastr.success("Add Product in Inquiries", "Product added successfully");
       dispatch({
         type: "STOP_LOADING",
       });
@@ -501,6 +501,7 @@ export const Logout = () => {
 /** Common Actions */
 // Error Handle
 export const errorHandle = (error, dispatch) => {
+console.log({error:error.response.data})
   if (
     error &&
     error.response &&
@@ -510,10 +511,10 @@ export const errorHandle = (error, dispatch) => {
   ) {
     localStorage.removeItem("token");
     toastr.error(
-      (error.response.data.messages &&
-        error.response.data.messages[0] &&
+      (error.response.data &&
+        ((error.response.data.messages && error.response.data.messages[0] &&
         error.response.data.messages[0].message) ||
-        error.response.data.detail
+      error.response.data.detail) ) 
     );
     dispatch({
       type: "AUTH_ERROR",
@@ -524,12 +525,12 @@ export const errorHandle = (error, dispatch) => {
     error &&
     error.response &&
     error.response.data &&
-    (error.response.data.messages || error.response.data.detail)
+    ( error.response.data.message || error.response.data.detail)
   )
     toastr.error(
-      (error.response.data.messages &&
-        error.response.data.messages[0] &&
-        error.response.data.messages[0].message) ||
+      (error.response.data.message &&
+        error.response.data.message &&
+        error.response.data.message) ||
         error.response.data.detail
     );
   dispatch({

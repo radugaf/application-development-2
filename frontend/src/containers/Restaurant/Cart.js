@@ -20,6 +20,8 @@ import {
   PlaceOrder,
   GetRestaurantOrder,
   MarkAsDelivery,
+  GetInquires,
+
 } from "../../redux/actions/products";
 import { URL } from "../../requests";
 
@@ -33,6 +35,8 @@ const Cart = ({
   pendingOrders,
   MarkAsDelivery,
   user,
+  GetInquires,
+  inquires
 }) => {
   const [formData, setFormData] = useState([]);
   const userType = user;
@@ -40,6 +44,7 @@ const Cart = ({
   useEffect(() => {
     GetAddToCart();
     GetRestaurantOrder();
+    GetInquires()
     carts &&
       carts.instant_delivery_items &&
       carts.instant_delivery_items.map((cart) => {
@@ -102,9 +107,8 @@ const Cart = ({
   };
 
   // TODO:RestaurantDetails
-  const nameOfRestaurant = "Restaurant 1";
-  const restaurantAddress = "Rajkot";
-  console.log({ formData });
+  const nameOfRestaurant = userType && userType.resturant_name
+  const restaurantAddress = userType && userType.resturant_address
   return (
     <>
       <Grid columns={2} textAlign="center" divided>
@@ -272,18 +276,85 @@ const Cart = ({
           </Grid.Column>
         </Grid.Row>
       </Grid>
+
+       <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      {/* TODO:if User type Supplier then display */}
+
+      <Divider horizontal>
+        <Header as="h4">
+          <Icon name="tag" />
+          Inquires
+        </Header>
+      </Divider>
+
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <Grid columns={1} textAlign="center" divided>
+        <Grid.Row width="14">
+          <Grid.Column width="14">
+            <Table celled>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Nume Produs</Table.HeaderCell>
+                  <Table.HeaderCell>Cantitate Ceruta</Table.HeaderCell>
+                  <Table.HeaderCell>Cantitate Oferita</Table.HeaderCell>
+                  <Table.HeaderCell>Pret Bucata</Table.HeaderCell>
+                  <Table.HeaderCell>Pret Total</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+
+              <Table.Body>
+                {inquires && inquires[nameOfRestaurant] &&
+                  inquires[nameOfRestaurant].map((inquire) => {
+                   
+                      return (
+                        <Table.Row>
+                          <Table.Cell positive>
+                            {inquire.product_title}
+                          </Table.Cell>
+                          <Table.Cell positive>
+                            {inquire.quantity_by_restaurant}
+                          </Table.Cell>
+                          <Table.Cell positive>
+                            {inquire.price_by_restaurant}
+                          </Table.Cell>
+                          <Table.Cell positive>
+                            {inquire.original_price}
+                          </Table.Cell>
+                          {/* TODO:Total */}
+                          <Table.Cell positive>50 Lei</Table.Cell>
+                        
+                        </Table.Row>
+                      );
+                    
+                  })}
+              </Table.Body>
+            </Table>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
+    inquires: state.products.inquiredDetails,
     carts: state.products.cartsDetails,
     pendingOrders: state.products.restaurantOrdersDetails,
     user: state.products.user,
   };
 };
 export default connect(mapStateToProps, {
+  GetInquires,
   GetAddToCart,
   DeleteCart,
   UpdateCart,

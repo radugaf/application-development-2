@@ -61,14 +61,27 @@ class CheckUserTypeAPIView(APIView):
     def get(self, request):
         try:
             data = {}
+            print(request.user)
+            print(request.user.is_company_owner)
+            print(request.user.is_company_staff)
+            print(request.user.is_restaurant_staff)
+            print(request.user.is_restaurant_owner)
+            
             if request.user.is_company_owner:
                 data['is_company_owner'] = True
             if request.user.is_company_staff:
                 data['is_company_staff'] = True
             if request.user.is_restaurant_staff:
                 data['is_restaurant_staff'] = True
+                resurantdata= request.user.get_restaurant()
+                data['resturant_name'] =resurantdata.name
+                data['resturant_address'] = resurantdata.address
             if request.user.is_restaurant_owner:
                 data['is_restaurant_owner'] = True
+                resurantdata= request.user.get_restaurant()
+                data['resturant_name'] = resurantdata.name
+                data['resturant_address'] = resurantdata.address
+                
             
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 

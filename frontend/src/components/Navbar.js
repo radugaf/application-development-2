@@ -16,7 +16,7 @@ class Navbar extends React.Component {
     console.log({ user });
     return (
       <Menu>
-        {userType && !userType.is_supplier && (
+        {userType && (userType.is_restaurant_owner||userType.is_restaurant_staff) && (
           <>
             <Link to="/cart">
               <Menu.Item
@@ -40,7 +40,7 @@ class Navbar extends React.Component {
           </>
         )}
 
-        {userType && userType.is_supplier && (
+        {userType && (userType.is_company_owner || userType.is_company_staff) && (
           <Link to="/inquiries">
             <Menu.Item
               name="inquiries"
@@ -73,7 +73,7 @@ class Navbar extends React.Component {
             </Menu.Item>
           </Link>
         )}
-        {userType && userType.is_supplier && (
+        {userType && (userType.is_company_owner || userType.is_company_staff) && (
           <Link to="/orders">
             <Menu.Item
               name="orders"

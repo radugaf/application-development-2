@@ -495,8 +495,8 @@ class ProductListInCartAPIView(APIView):
                     'product_original_price': float(item.product.price),
                     'price_by_restaurant': float(item.price_by_restaurant),
                     'quantity_by_restaurant': int(item.quantity_by_restaurant),
-                    'price_by_supplier': float(item.price_by_supplier),
-                    'quantity_by_supplier': int(item.quantity_by_supplier),
+                    'price_by_supplier': float(item.price_by_supplier_company),
+                    'quantity_by_supplier': int(item.quantity_by_supplier_company),
                     'is_custom': item.is_custom,
                     'is_editable': item.is_editable,
                     'is_enquiry_solved': item.is_enquiry_solved,
@@ -517,12 +517,13 @@ class AddItemsInEnquiry(APIView):
             product_item_list = request.data.get('product_items', [])
             user = request.user
             restaurant = user.get_restaurant()
+            print(restaurant)
 
             if not product_item_list:
-                return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_200_OK)
+                return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             if not restaurant:
-                return Response({'status': 'error', 'message': 'Current user is not associated with any restaurant'}, status=status.HTTP_200_OK)
+                return Response({'status': 'error', 'message': 'Current user is not associated with any restaurant'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             order_items = OrderItem.objects.filter(id__in=product_item_list)
             order_items.update(is_editable=False, custom_status='PENDING')
@@ -547,6 +548,7 @@ class EnquiryListAPIView(APIView):
                         data[enquiry.restaurant.name].append({
                             'enquiry_id': enquiry.id,
                             'product_item_id': item.id,
+                            'product_title': item.product.title,
                             'original_price': float(item.product.price),
                             'price_by_restaurant': float(item.price_by_restaurant),
                             'quantity_by_restaurant': item.quantity_by_restaurant,

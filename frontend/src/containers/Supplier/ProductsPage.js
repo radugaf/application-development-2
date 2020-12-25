@@ -39,28 +39,6 @@ const ProductsPage = ({
     e.preventDefault();
     AddToCart({ product_id: product_id });
     toastr.success(`Add To ${type}`, `Add To ${type} successfully added `);
-
-    // const config = {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjExOTA5MzE5LCJqdGkiOiJiZDg2MDVmMDQ5ZTg0OTFkODY2NzM4ZTUyM2VkZWU4MCIsInVzZXJfaWQiOjF9.V-oLJKAsRYCbon1fm_zUpWYalEFI9QrNykaMNiK_T6E`,
-    //   },
-    // };
-
-    // axios
-    //   .post(
-    //     "http://localhost:8000/api/v1/add-product-in-cart/",
-    //     {
-    //       product_id,
-    //     },
-    //     config
-    //   )
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   };
 
   console.log({ products });
@@ -97,6 +75,10 @@ const ProductsPage = ({
                             <p>
                               Instant Delivery :{" "}
                               {product.instant_delivery ? "Yes" : "No"}
+                            </p>
+                             <p>
+                              Customer :{" "}
+                              {product.supplier_company && product.supplier_company.name}
                             </p>
                             <Button
                               color={

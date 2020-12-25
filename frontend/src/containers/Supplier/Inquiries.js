@@ -126,7 +126,7 @@ const Inquiries = ({
                                   <>
                                     <Table.Row>
                                       <Table.Cell positive>
-                                        Paste Barilla
+                                        {inquire.product_title}
                                       </Table.Cell>
                                       <Table.Cell positive>
                                         {inquire.quantity_by_restaurant}
@@ -134,7 +134,7 @@ const Inquiries = ({
                                       <Table.Cell positive>
                                         {inquire.price_by_restaurant}
                                       </Table.Cell>
-                                      <Table.Cell positive>10 Lei</Table.Cell>
+                                      <Table.Cell positive>{inquire.original_price}</Table.Cell>
                                       <Table.Cell positive>50 Lei</Table.Cell>
                                     </Table.Row>
                                     <Table.Row>

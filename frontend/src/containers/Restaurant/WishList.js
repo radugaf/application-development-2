@@ -54,7 +54,7 @@ const WishList = ({
   const onFormSubmit = (e, product_items_id) => {
     e.preventDefault();
     AddInquiry({ product_id: [product_items_id] });
-    toastr.success("Add Product in Inquiries", "Product added successfully");
+    
   };
 
   return (
