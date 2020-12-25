@@ -3,7 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from edesia_main.products.models import Restaurant, StaffDetail, SupplierDetail
+from edesia_main.products.models import Restaurant
 
 
 class User(AbstractUser):
@@ -15,7 +15,8 @@ class User(AbstractUser):
 
     is_restaurant_owner = models.BooleanField(default=False)
     is_restaurant_staff = models.BooleanField(default=False)
-    is_supplier = models.BooleanField(default=False)
+    is_company_owner = models.BooleanField(default=False)
+    is_company_staff = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse(
@@ -30,3 +31,6 @@ class User(AbstractUser):
             return self.name + " - "
         else:
             return '{} {} - '.format(self.first_name, self.last_name)
+
+    def get_company(self):
+        return self.company_work_for.first()

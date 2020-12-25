@@ -5,8 +5,8 @@ from edesia_main.products.models import *
 # Register your models here.
 
 admin.site.register(Restaurant)
-admin.site.register(StaffDetail)
-admin.site.register(SupplierDetail)
+# admin.site.register(StaffDetail)
+# admin.site.register(SupplierDetail)
 admin.site.register(Product)
 admin.site.register(Variation)
 admin.site.register(ProductVariation)

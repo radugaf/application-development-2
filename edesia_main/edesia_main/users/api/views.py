@@ -16,7 +16,6 @@ from edesia_main.users.api.serializers import *
 
 User = get_user_model()
 
-
 class UserRegistrationView(APIView):
     permission_classes = ()
 
@@ -26,23 +25,27 @@ class UserRegistrationView(APIView):
             bio = request.data.get('bio', '')
             password = request.data.get('password')
 
-            is_supplier = True if request.data.get('is_supplier', False) else False
+            is_company_owner = True if request.data.get('is_company_owner', False) else False
+            is_company_staff = True if request.data.get('is_company_staff', False) else False
             is_restaurant_owner = True if request.data.get('is_restaurant_owner', False) else False
             is_restaurant_staff = True if request.data.get('is_restaurant_staff', False) else False
 
-            if not is_supplier and not is_restaurant_owner and not is_restaurant_staff:
-                return Response({'status': 'error', 'message': 'User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)
+            if not is_company_owner and not is_company_staff and not is_restaurant_owner and not is_restaurant_staff:
+                return Response({'status': 'error', 'message': 'User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)    
 
-            if is_restaurant_owner + is_supplier + is_restaurant_staff != 1:
-                return Response({'status': 'error', 'message': 'Only one User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)
+            if is_company_staff + is_company_owner + is_restaurant_owner + is_restaurant_staff != 1:
+                return Response({'status': 'error', 'message': 'Only one User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)    
 
             data = {
-                'name': name,
+                'username': name, # Such a lame mistake :(
                 'bio': bio,
-                'is_supplier': is_supplier,
+                'is_company_owner': is_company_owner,
+                'is_company_staff': is_company_staff,
                 'is_restaurant_owner': is_restaurant_owner,
                 'is_restaurant_staff': is_restaurant_staff,
             }
+            print(data)
+            
             user = User.objects.create(**data)
 
             user.set_password(password)
@@ -51,45 +54,29 @@ class UserRegistrationView(APIView):
             return Response({'status': 'success', 'message': 'User is created successfully'}, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response({'status': 'error', 'message': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class CheckUserTypeAPIView(APIView):
     def get(self, request):
-        userData = request.user
-        print(userData.id)
-
         try:
             data = {}
-            data['user_username'] = userData.name
-            data['user_id'] = userData.id
-
-            if request.user.is_supplier:
-                supplier = SupplierDetail.objects.get(user=userData.id)
-                data['user_name'] = supplier.user.username
-                print("supplier", supplier)
-                data['is_supplier'] = True
+            if request.user.is_company_owner:
+                data['is_company_owner'] = True
+            if request.user.is_company_staff:
+                data['is_company_staff'] = True
             if request.user.is_restaurant_staff:
-                staff = StaffDetail.objects.get(user=userData.id)
-                data['user_name'] = staff.user.username
-
-                print("staff", staff)
                 data['is_restaurant_staff'] = True
             if request.user.is_restaurant_owner:
-                restaurant = Restaurant.objects.get(owner=userData.id)
-                print("restaurant", restaurant.name)
-                data['user_name'] = restaurant.name
                 data['is_restaurant_owner'] = True
-
+            
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class StaffListToAddRestaurantAPIView(APIView):
     serializer_class = UserSerializer
-
     def get(self, request):
         try:
             users = User.objects.filter(is_restaurant_staff=True, restaurants_work_for__isnull=True)
@@ -98,7 +85,6 @@ class StaffListToAddRestaurantAPIView(APIView):
 
         except Exception as e:
             return Response({'status': 'error', 'message': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class AddStaffForRestaurantAPIView(APIView):
     def post(self, request):
@@ -116,19 +102,58 @@ class AddStaffForRestaurantAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-class RemoveStaffForRestaurantAPIView(APIView):
+class RemoveStaffFromRestaurantAPIView(APIView):
     def post(self, request):
         try:
             restaurant_id = request.data.get('restaurant_id')
             staff_id = request.data.get('staff_id')
 
-            print(restaurant_id, staff_id)
-
             restaurant = Restaurant.objects.get(id=restaurant_id)
             staff = User.objects.get(id=staff_id)
 
             added = restaurant.staff.remove(staff)
+
+            return Response({'status': 'success', 'message': 'Staff has been removed successfully'}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class StaffListToAddCompanyAPIView(APIView):
+    serializer_class = UserSerializer
+    def get(self, request):
+        try:
+            users = User.objects.filter(is_company_staff=True, company_work_for__isnull=True)
+            serializer = self.serializer_class(users, many=True)
+            return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'status': 'error', 'message': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class AddStaffForCompanyAPIView(APIView):
+    def post(self, request):
+        try:
+            company_id = request.data.get('company_id')
+            staff_id = request.data.get('staff_id')
+
+            company = Company.objects.get(id=company_id)
+            staff = User.objects.get(id=staff_id)
+
+            added = company.staff.add(staff)
+
+            return Response({'status': 'success', 'message': 'Staff has been added successfully'}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class RemoveStaffFromCompanyAPIView(APIView):
+    def post(self, request):
+        try:
+            company_id = request.data.get('company_id')
+            staff_id = request.data.get('staff_id')
+
+            company = Company.objects.get(id=company_id)
+            staff = User.objects.get(id=staff_id)
+
+            added = company.staff.remove(staff)
 
             return Response({'status': 'success', 'message': 'Staff has been removed successfully'}, status=status.HTTP_200_OK)
 

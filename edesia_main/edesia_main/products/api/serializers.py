@@ -12,54 +12,63 @@ User = get_user_model()
 class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
-        fields = ('name', 'address', 'phone_number')
+        fields = ('id', 'name', 'address', 'phone_number')
 
-class StaffDetailSerializer(serializers.ModelSerializer):
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
-        model = StaffDetail
-        fields = '__all__' 
+        model = Company
+        fields = ( 'id', 'name', 'address', 'phone_number',)
 
-class SupplierDetailSerializer(serializers.ModelSerializer):
+class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SupplierDetail
-        fields = '__all__' 
+        model = UserDetail
+        exclude = ('created_date', 'modified_date',)
 
 class ProductSerializer(serializers.ModelSerializer):
+    supplier_company = serializers.SerializerMethodField()
     class Meta:
         model = Product
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)
+    
+    def get_supplier_company(self, obj):
+        if obj.supplier_company:
+            return {
+                'id': obj.id,
+                'name': obj.supplier_company.name,
+            }
+        return None
 
 class VariationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variation
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)
 
 class ProductVariationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariation
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)
 
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)
 
 class EnquirySerializer(serializers.ModelSerializer):
     class Meta:
         model = Enquiry
-        fields = '__all__' 
+        exclude = ('created_date', 'modified_date',)

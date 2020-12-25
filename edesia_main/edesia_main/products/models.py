@@ -25,7 +25,7 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
-class StaffDetail(models.Model):
+class UserDetail(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL, related_name='staff')
     nationality = CountryField(blank=True, null=True)
     phonenumber = models.CharField(blank=True, null=True, max_length=200)
@@ -37,18 +37,32 @@ class StaffDetail(models.Model):
     def __str__(self):
         return self.user.username
     
-class SupplierDetail(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL, related_name='supplier')
-    nationality = CountryField(blank=True, null=True)
-    phonenumber = models.CharField(blank=True, null=True, max_length=200)
-    address = models.TextField()
+# class SupplierDetail(models.Model):
+#     user = models.OneToOneField(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL, related_name='supplier')
+#     nationality = CountryField(blank=True, null=True)
+#     phonenumber = models.CharField(blank=True, null=True, max_length=200)
+#     address = models.TextField()
 
+#     created_date = models.DateTimeField(auto_now_add=True)
+#     modified_date = models.DateTimeField(auto_now=True)
+
+#     def __str__(self):
+#         return self.user.username
+
+class Company(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    phone_number = models.CharField(max_length=255)
+
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='owned_company')
+    staff = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='company_work_for')
+    
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user.username
-    
+        return self.name
+
 # User = get_user_model()
 
 class Product(models.Model):
@@ -60,6 +74,8 @@ class Product(models.Model):
     total_stock = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     instant_delivery = models.BooleanField()
+    supplier_company = models.ForeignKey(Company, on_delete=models.CASCADE, default=None, null=True)
+    last_updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, default=None, null=True)
 
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
@@ -120,9 +136,9 @@ class OrderItem(models.Model):
     custom_status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='NOT_CUSTOM')
     is_declined = models.BooleanField(default=False)
     quantity_by_restaurant = models.IntegerField(default=0)
-    quantity_by_supplier = models.IntegerField(default=0)
+    quantity_by_supplier_company = models.IntegerField(default=0)
     price_by_restaurant = models.IntegerField(default=0)
-    price_by_supplier = models.IntegerField(default=0)
+    price_by_supplier_company = models.IntegerField(default=0)
     final_quantity = models.IntegerField(default=0)
     final_price = models.FloatField(default=0)
 
