@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Grid, Image, Input, Divider, Button } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
+import Logo from "../../assets/img/logo.png";
+import NavBar from "../../components/Navbar";
+import SideMenu from "../../components/SideMenu";
 
 import {
   SetToken,
@@ -54,101 +56,80 @@ const WishList = ({
   const onFormSubmit = (e, product_items_id) => {
     e.preventDefault();
     AddInquiry({ product_id: [product_items_id] });
-    
+    toastr.success("Add Product in Inquiries", "Product added successfully");
   };
 
   return (
     <>
-      <Grid columns={1} textAlign="center">
-        <Grid.Row>
-          <Grid.Column width="14">
-            <Grid columns={3} textAlign="left">
-              {carts &&
-                carts.not_instant_delivery_items &&
-                carts.not_instant_delivery_items.map((cart) => (
-                  <Grid.Row>
-                    <Grid.Column
-                      width="1"
-                      textAlign="center"
-                      verticalAlign="middle"
-                    >
-                      <button
-                        onClick={(e) => onDeleteCart(e, cart.product_item_id)}
-                      >
-                        Delete
-                      </button>
-                    </Grid.Column>
-                    <Grid.Column width="2">
-                      <Image
-                        src={`${URL}${cart.product_image_url}`}
-                        size="medium"
-                      />
-                    </Grid.Column>
-                    <Grid.Column width="13" stretched>
-                      <p>Nume : {cart.product_title}</p>
-                      <p>Cantitate : {cart.product_total_stock || ""}</p>
-                      <p>Pret : {cart.product_original_price}</p>
-                      <p>Instant Delivery : No</p>
-                      <p>Qty: {cart.product_quantity}</p>
-                      <p>Editable : {cart.is_editable ? "Yes" : "No"}</p>
-                      <Input
-                        disabled={!cart.is_editable}
-                        label="Cantitate dorita"
-                        placeholder="10 Buc"
-                        onBlur={(e) => {
-                          UpdateQty(
-                            e,
-                            cart.product_item_id,
-                            cart.product_price
-                          );
-                        }}
-                      />
-                      <br />
-                      <Button
-                        color="orange"
-                        onClick={(e) => onFormSubmit(e, cart.product_item_id)}
-                      >
-                        Cere Oferta
-                      </Button>
-                    </Grid.Column>
-                  </Grid.Row>
-                ))}
+      <NavBar />
 
-              {/* <Grid.Row>
-                <Grid.Column width={16}>
-                  <Divider />
-                </Grid.Column>
-              </Grid.Row>
+<div className="content-wrapper">
 
-              <Grid.Row>
-                <Grid.Column
-                  width="1"
-                  textAlign="center"
-                  verticalAlign="middle"
-                >
-                  <a href="#">Delete</a>
-                </Grid.Column>
-                <Grid.Column width="2">
-                  <Image
-                    src="https://react.semantic-ui.com/images/wireframe/image.png"
-                    size="medium"
-                  />
-                </Grid.Column>
-                <Grid.Column width="13" stretched>
-                  <p>Nume : Nume.produs</p>
-                  <p>Cantitate : Cantitate.furnizor.maxima</p>
-                  <p>Pret : Pret.Produs</p>
-                  <p>Instant Delivery : Instant.Delivery.False</p>
-                  <Input label="Cantitate dorita" placeholder="10 Buc" />
-                  <br />
-                  <Button color="orange">Cere Oferta</Button>
-                </Grid.Column>
-              </Grid.Row>
-             */}
-            </Grid>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+<SideMenu />
+
+        <div className="wishlist-content-wrapper-column">
+          <div className="card-row padding-15 page-name-wrapper">
+            <span class="page-name color-orange">
+              <i class="fas fa-dolly margin-right-10 color-orange"></i>Wishlist
+            </span>
+          </div>
+
+          <table className="product-page-table margin-top-25">
+            <tr>
+              <th className='td-vertical-center'>Select</th>
+              <th>Poza</th>
+              <th>Nume</th>
+              <th>Status</th>
+              <th>Pret</th>
+              <th className='td-vertical-center'>Cantitate</th>
+              <th className='td-vertical-center'>Sterge</th>
+            </tr>
+            {carts &&
+              carts.not_instant_delivery_items &&
+              carts.not_instant_delivery_items.map((cart) => (
+                <tr>
+                  <td className='td-vertical-center'>
+                    <input type='checkbox'></input>
+                  </td>
+
+                  <td className="product-page-table-picture-data">
+                    <img src={`${URL}${cart.product_image_url}`}></img>
+                  </td>
+                  <td className="product-page-table-name-data">
+                    {cart.product_title}
+                  </td>
+                  <td>
+                  <span>{cart.is_editable ? "Deschisa" : "Inchisa"}</span>
+                  </td>
+                  <td>{cart.product_original_price} Ron</td>
+                  <td className="td-vertical-center">
+                    <input
+                      disabled={!cart.is_editable}
+                      label="Cantitate dorita"
+                      onBlur={(e) => {
+                        UpdateQty(e, cart.product_item_id, cart.product_price);
+                      }}
+                      type="value"
+                      className="cart-page-cantitate-dorita"
+                    />
+                  </td>
+                  <td className="td-vertical-center">
+                    <i
+                      onClick={(e) => onDeleteCart(e, cart.product_item_id)}
+                      class="fas fa-times padding-10 color-red"
+                    ></i>
+                  </td>
+                </tr>
+
+              ))}
+              <tr>
+                <td colspan='7'>
+                  <div className='buton-cere-oferta'>Cere Oferta</div>
+                </td>
+              </tr>
+          </table>
+        </div>
+      </div>
     </>
   );
 };

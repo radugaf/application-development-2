@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TableProducts from "../../components/TableProducts.js";
-import {
-  Form,
-  Button,
-  Table,
-  Grid,
-  Icon,
-  Modal,
-  Header,
-  Divider,
-  Input,
-} from "semantic-ui-react";
+import Logo from "../../assets/img/logo.png";
+import NavBar from "../../components/Navbar";
+import SideMenu from "../../components/SideMenu";
 
 import ITableModalsAccept from "../../components/Table/iTableModalsAccept";
 import ITableModalsDecline from "../../components/Table/iTableModalsDecline";
@@ -32,7 +24,14 @@ const Inquiries = ({
   DeclineInquiry,
   user,
 }) => {
+
+
+  const [veziComanda, setVeziComanda] = useState(false);
   // MODAL SETTINGS
+
+  const [openModal, setOpenModal] = React.useState(false);
+
+
   const [open, setOpen] = React.useState(false);
   const [secondOpen, setSecondOpen] = React.useState(false);
   const [thirdOpen, setThirdOpen] = React.useState(false);
@@ -75,242 +74,123 @@ const Inquiries = ({
 
   return (
     <>
-      <Grid columns={1} textAlign="center" divided>
-        <Grid.Row width="14">
-          <Grid.Column width="14">
-            <Table celled>
-              {/* TODO:Remaning Parameter */}
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>Nume restaurant</Table.HeaderCell>
-                  <Table.HeaderCell>Data Comanda</Table.HeaderCell>
-                  <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
-                  <Table.HeaderCell>Timp ramas</Table.HeaderCell>
-                  <Table.HeaderCell>Valoare T.V.A</Table.HeaderCell>
-                  <Table.HeaderCell>Vezi Comanda</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
+      <NavBar />
 
-              <Table.Body>
-                <Table.Row>
-                  <Table.Cell warning>Edesia</Table.Cell>
-                  <Table.Cell warning>12.02.2020</Table.Cell>
-                  <Table.Cell warning>450 Ron</Table.Cell>
-                  <Table.Cell warning>4 Ore</Table.Cell>
-                  <Table.Cell warning>100 Ron</Table.Cell>
-                  <Table.Cell warning textAlign="center">
-                    <Button color="Orange">Vezi Detalii</Button>
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell positive colspan="7" textAlign="center">
-                    <Table celled>
-                      <Table.Header>
-                        <Table.Row>
-                          <Table.HeaderCell>Nume Produs</Table.HeaderCell>
-                          <Table.HeaderCell>Cantitate Ceruta</Table.HeaderCell>
-                          <Table.HeaderCell>Pret Buc</Table.HeaderCell>
-                          <Table.HeaderCell>Valoare TVA</Table.HeaderCell>
-                          <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
-                        </Table.Row>
-                      </Table.Header>
+<div className="content-wrapper">
 
-                      <Table.Body>
-                        {Object.keys(inquires) &&
-                          Object.keys(inquires).map((key) => (
-                            <>
-                              <h2>{key}</h2>
-                              {inquires &&
-                                inquires[key] &&
-                                inquires[key].map((inquire) => (
-                                  <>
-                                    <Table.Row>
-                                      <Table.Cell positive>
-                                        {inquire.product_title}
-                                      </Table.Cell>
-                                      <Table.Cell positive>
-                                        {inquire.quantity_by_restaurant}
-                                      </Table.Cell>
-                                      <Table.Cell positive>
-                                        {inquire.price_by_restaurant}
-                                      </Table.Cell>
-                                      <Table.Cell positive>{inquire.original_price}</Table.Cell>
-                                      <Table.Cell positive>50 Lei</Table.Cell>
-                                    </Table.Row>
-                                    <Table.Row>
-                                      <Table.Cell
-                                        colspan="6"
-                                        textAlign="center"
-                                      >
-                                        <Modal
-                                          closeIcon
-                                          open={open}
-                                          trigger={
-                                            <Button color="green">
-                                              Accepta
-                                            </Button>
-                                          }
-                                          onClose={() => {
-                                            setCurrentInquire();
-                                            setOpen(false);
-                                          }}
-                                          onOpen={() => {
-                                            setCurrentInquire(inquire);
-                                            setOpen(true);
-                                          }}
-                                        >
-                                          <Header content="Accepta comanda integral" />
-                                          <Modal.Content>
-                                            <p>
-                                              Esti sigur ca vrei sa accepti
-                                              comanda integral ?
-                                            </p>
-                                          </Modal.Content>
-                                          <Modal.Actions>
-                                            <Button
-                                              color="green"
-                                              onClick={(e) =>
-                                                onUpdate(e, "accept")
-                                              }
-                                            >
-                                              <Icon name="remove" /> Da
-                                            </Button>
-                                            <Button
-                                              color="red"
-                                              onClick={() => {
-                                                setCurrentInquire();
-                                                setOpen(false);
-                                              }}
-                                            >
-                                              <Icon name="checkmark" /> Nu
-                                            </Button>
-                                          </Modal.Actions>
-                                        </Modal>
+<SideMenu />
 
-                                        <Modal
-                                          closeIcon
-                                          SecondOpen={open}
-                                          trigger={
-                                            <Button color="red">Refuza</Button>
-                                          }
-                                          onClose={() => {
-                                            setCurrentInquire();
-                                            setSecondOpen(false);
-                                          }}
-                                          onOpen={(e) => {
-                                            setCurrentInquire(inquire);
-                                            setSecondOpen(true);
-                                          }}
-                                        >
-                                          <Header content="Refuza comanda integral" />
-                                          <Modal.Content>
-                                            <p>
-                                              Esti sigur ca vrei sa refuzi
-                                              comanda integral ?
-                                            </p>
-                                          </Modal.Content>
-                                          <Modal.Actions>
-                                            <Button
-                                              color="green"
-                                              onClick={(e) => onReject(e)}
-                                            >
-                                              <Icon name="remove" /> Da
-                                            </Button>
-                                            <Button
-                                              color="red"
-                                              onClick={() => {
-                                                setCurrentInquire();
-                                                setSecondOpen(false);
-                                              }}
-                                            >
-                                              <Icon name="checkmark" /> Nu
-                                            </Button>
-                                          </Modal.Actions>
-                                        </Modal>
+      <div className="products-wrapper">
+        <div className="products-name-view card-row flex-row vertical-center padding-15">
+          <i class="fal fa-barcode-read margin-right-10 color-blue"></i>
+          <span className="bold-700 color-blue">Inquiries</span>
+        </div>
 
-                                        <Modal
-                                          closeIcon
-                                          thirdOpen={open}
-                                          trigger={
-                                            <Button color="orange">
-                                              Partial
-                                            </Button>
-                                          }
-                                          onClose={() => {
-                                            setCurrentInquire();
-                                            setThirdOpen(false);
-                                          }}
-                                          onOpen={() => {
-                                            setCurrentInquire(inquire);
-                                            setThirdOpen(true);
-                                          }}
-                                        >
-                                          <Header content="Accepta comanda partial" />
-                                          <Modal.Content scroll>
-                                            <>
-                                              <h2>Nume Produs : </h2>
-                                              <p>
-                                                Cantitate Ceruta :
-                                                {inquire.quantity_by_restaurant}
-                                              </p>
-                                              <p>Valoare Buc : 10 Lei</p>
-                                              <p>Valoare Totala : 120 Lei</p>
-                                              <Form>
-                                                <Form.Field>
-                                                  <Input
-                                                    label="Cantitate disponibila"
-                                                    placeholder="ex : 10"
-                                                    onBlur={(e) =>
-                                                      setCurrentQty(
-                                                        +e.target.value
-                                                      )
-                                                    }
-                                                  />
-                                                </Form.Field>
-                                              </Form>
-                                              <br />
-                                              <Divider />
-                                              <br />
-                                            </>
-                                          </Modal.Content>
-                                          <Modal.Actions>
-                                            <Button
-                                              color="green"
-                                              onClick={(e) =>
-                                                onUpdate(e, "partial")
-                                              }
-                                            >
-                                              <Icon name="remove" /> Da
-                                            </Button>
-                                            <Button
-                                              color="red"
-                                              onClick={() => {
-                                                setCurrentQty();
-                                                setCurrentInquire();
-                                                setThirdOpen(false);
-                                              }}
-                                            >
-                                              <Icon name="checkmark" /> Nu
-                                            </Button>
-                                          </Modal.Actions>
-                                        </Modal>
-                                      </Table.Cell>
-                                    </Table.Row>
-                                  </>
-                                ))}
-                            </>
-                          ))}
-                      </Table.Body>
-                    </Table>
-                  </Table.Cell>
-                </Table.Row>
+        <table className='product-page-table margin-top-25'>
+            <tr>
+              <th>Nume restaurant</th>
+              <th>Data Comanda</th>
+              <th>Valoare Comanda</th>
 
-                <Table.Row></Table.Row>
-              </Table.Body>
-            </Table>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+              <th className='td-vertical-center'>Vezi Detalii</th>
+            </tr>
+            <tr>
+              <td>Edesia</td>
+              <td>12.02.2020</td>
+              <td>450 Ron</td>
+
+              <td><div className='offers-vezi-detalii' onClick={() => setVeziComanda(!veziComanda)}>Vezi Detalii</div></td>
+            </tr>
+            {veziComanda &&
+            <>
+            <tr>
+
+
+              <td colSpan='6'>
+                <table className='product-page-table margin-top-10'>
+                  <tr>
+                    <th>Poza</th>
+                    <th>Nume Produs</th>
+                    <th>Cantitate Ceruta</th>
+                    <th>Pret Buc</th>
+
+                    <th>Val Totala</th>
+                  </tr>
+                  <tr>
+                    <td><img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img></td>
+                    <td>Paste Barilla</td>
+                    <td>10 Buc</td>
+                    <td>10 Ron</td>
+
+                    <td>100 Ron</td>
+                  </tr>
+                  <tr>
+                    <td colspan='3' className='orders-wrapper'>
+                      <div className='orders-summary'>
+                       <span>Valoare Totala Comanda : 100 Ron</span>
+                     </div>
+                    </td>
+                      <td colspan='3' className='td-vertical-left'>
+                        <div className='orders-buttons'>
+                          <div className='orders-accept-button'>Accepta</div>
+                          <div className='orders-deny-button'>Refuza</div>
+                          <div className='orders-partial-button' onClick={() => setOpenModal(!openModal)}>Accepta Partial</div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            </>
+        }
+          </table>
+
+      </div>
+    </div>
+
+    {openModal &&
+    <div className='inquiries-partial-modal'>
+      <div className="modal-container card-row padding-15">
+        <span className='partial-modal-title'>Partial Inquiery</span>
+        <div className='partial-modal-item-wrapper'>
+          <form className='partiam-modal-form'>
+            <table className='partial-modal-table'>
+              <tr>
+                <th>Product Name</th>
+                <th>Required Quantity</th>
+                <th>Available Quantity</th>
+              </tr>
+              <tr>
+                <td>Paste Barilla</td>
+                <td>300</td>
+                <td>
+                  <input className='partial-modal-input' type='value'></input>
+                </td>
+              </tr>
+              <tr>
+                <td>Paste Barilla</td>
+                <td>300</td>
+                <td>
+                  <input className='partial-modal-input' type='value'></input>
+                </td>
+              </tr>
+              <tr>
+                <td>Paste Barilla</td>
+                <td>300</td>
+                <td>
+                  <input className='partial-modal-input' type='value'></input>
+                </td>
+              </tr>
+            </table>
+            <div className='partial-modal-button-wrapper'>
+              <button className='partial-modal-send-button'>Send Offer</button>
+              <button className='partial-modal-cancel-button'>Cancel Offer</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
     </>
   );
 };

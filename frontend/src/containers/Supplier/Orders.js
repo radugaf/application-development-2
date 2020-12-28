@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from "react";
 import TableProducts from "../../components/TableProducts.js";
 import axios from "axios";
-import {
-  Form,
-  Button,
-  Table,
-  Grid,
-  Icon,
-  Modal,
-  Header,
-  Divider,
-  Input,
-} from "semantic-ui-react";
+import Logo from "../../assets/img/logo.png";
+import NavBar from "../../components/Navbar";
+import SideMenu from "../../components/SideMenu";
 
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
@@ -20,6 +12,8 @@ import { GetSupplierOrder, MarkAsDelivery } from "../../redux/actions/products";
 import { URL, CREDENTIALS } from "../../requests";
 
 const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
+  const [veziComanda, setVeziComanda] = useState(false);
+
   // const [formData, setFormData] = useState({
   //   product_item_id: 0, //here is product id is given by default
   // });
@@ -39,106 +33,177 @@ const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
 
   return (
     <>
-      <Grid columns={1} textAlign="center" divided>
-        <Grid.Row width="14">
-          <Grid.Column width="14">
-            <Table celled>
-              {userType && userType.is_supplier && (
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>Nume restaurant</Table.HeaderCell>
-                    <Table.HeaderCell>Data Comanda</Table.HeaderCell>
-                    <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
-                    <Table.HeaderCell>Timp ramas</Table.HeaderCell>
-                    <Table.HeaderCell>Valoare T.V.A</Table.HeaderCell>
-                    <Table.HeaderCell>Accepta Comanda</Table.HeaderCell>
-                    <Table.HeaderCell>Refuza Comanda</Table.HeaderCell>
-                    <Table.HeaderCell>Vezi Comanda</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-              )}
-              {userType && !userType.is_supplier && (
-                <Table.Body>
-                  {orders &&
-                    orders.map((order) => {
-                      if (!order.is_delivered) {
-                        return (
-                          <Table.Row>
-                            <Table.Cell warning>
-                              {order.product_title}
-                            </Table.Cell>
-                            <Table.Cell warning></Table.Cell>
-                            {/* TODO:Order Value  */}
-                            <Table.Cell warning></Table.Cell>
-                            <Table.Cell warning></Table.Cell>
-                            <Table.Cell warning></Table.Cell>
-                            <Table.Cell warning textAlign="center">
-                              <Button
-                                color="green"
-                                onClick={(e) =>
-                                  acceptOrder(e, order.product_item_id)
-                                }
-                              >
-                                Accepta
-                              </Button>
-                            </Table.Cell>
-                            <Table.Cell warning textAlign="center">
-                              <Button color="red">Refuza</Button>
-                            </Table.Cell>
-                            <Table.Cell warning textAlign="center">
-                              <Button>Vezi Detalii</Button>
-                            </Table.Cell>
-                          </Table.Row>
-                        );
-                      }
-                    })}
+    <NavBar />
 
-                  <Table.Row>
-                    <Table.Cell positive colspan="8" textAlign="center">
-                      <Table celled>
-                        <Table.Header>
-                          <Table.Row>
-                            <Table.HeaderCell>Nume Produs</Table.HeaderCell>
-                            <Table.HeaderCell>Cantitate</Table.HeaderCell>
-                            <Table.HeaderCell>Pret Buc</Table.HeaderCell>
-                            <Table.HeaderCell>Valoare TVA</Table.HeaderCell>
-                            <Table.HeaderCell>Valoare Comanda</Table.HeaderCell>
-                          </Table.Row>
-                        </Table.Header>
+      <div className="content-wrapper">
+      
+      <SideMenu />
 
-                        <Table.Body>
-                          {orders &&
-                            orders.map((order) => {
-                              if (order.is_delivered) {
-                                return (
-                                  <Table.Row>
-                                    <Table.Cell positive>
-                                      {order.product_title}
-                                    </Table.Cell>
-                                    <Table.Cell positive>
-                                      {/* TODO:Amount */}
-                                    </Table.Cell>
-                                    <Table.Cell positive>
-                                      {order.product_price}
-                                    </Table.Cell>
-                                    <Table.Cell positive></Table.Cell>
-                                    {/* TODO:Order Value */}
-                                    <Table.Cell positive></Table.Cell>
-                                  </Table.Row>
-                                );
-                              }
-                            })}
-                        </Table.Body>
-                      </Table>
-                    </Table.Cell>
-                  </Table.Row>
-                  <Table.Row></Table.Row>
-                </Table.Body>
-              )}
-            </Table>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+        <div className="products-wrapper">
+          <div className="products-name-view card-row flex-row vertical-center padding-15">
+            <i class="fal fa-barcode-read margin-right-10 color-blue"></i>
+            <span className="bold-700 color-blue">Orders</span>
+          </div>
+
+          <table className="product-page-table margin-top-25">
+            {userType && userType.is_supplier && (
+              <tr>
+                <th>Nume restaurant</th>
+                <th>Data Comanda</th>
+                <th>Valoare Comanda</th>
+
+                <th className="td-vertical-center">See Details</th>
+              </tr>
+            )}
+            <tr>
+              <td>Edesia</td>
+              <td>12.02.2020</td>
+              <td>Total order amount</td>
+
+              <td>
+                <div
+                  className="offers-vezi-detalii"
+                  onClick={() => setVeziComanda(!veziComanda)}
+                >
+                  See Details
+                </div>
+              </td>
+            </tr>
+            {veziComanda && (
+              <>
+                <tr>
+                  <td colSpan="6">
+                    <table className="product-page-table margin-top-10">
+                      <tr>
+                        <th className="td-vertical-center">Select</th>
+                        <th>Poza Produs</th>
+                        <th>Nume Produs</th>
+                        <th>Cantitate</th>
+                        <th>Pret Buc</th>
+
+                        <th>Valoare Totala</th>
+                      </tr>
+                      <tr>
+                        <td className="td-vertical-center">
+                          <input type="checkbox" />
+                        </td>
+                        <td>
+                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
+                        </td>
+                        <td>Paste Barilla</td>
+                        <td>10 Buc</td>
+                        <td>10 Ron</td>
+
+                        <td>100 Ron</td>
+                      </tr>
+                      <tr>
+                        <td className="td-vertical-center">
+                          <input type="checkbox" />
+                        </td>
+                        <td>
+                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
+                        </td>
+                        <td>Paste Barilla</td>
+                        <td>10 Buc</td>
+                        <td>10 Ron</td>
+
+                        <td>100 Ron</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3" className="orders-wrapper">
+                          <div className="orders-summary">
+                            <span>Valoare Totala Comanda : 100 Ron</span>
+                          </div>
+                        </td>
+                        <td colspan="3" className="td-vertical-left">
+                          <div className="orders-buttons">
+                            <div className="orders-accept-button">
+                              Mark as shipped
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </>
+            )}
+            <tr>
+              <td>Edesia</td>
+              <td>12.02.2020</td>
+              <td>Total order amount</td>
+
+              <td>
+                <div
+                  className="offers-vezi-detalii"
+                  onClick={() => setVeziComanda(!veziComanda)}
+                >
+                  See Details
+                </div>
+              </td>
+            </tr>
+            {veziComanda && (
+              <>
+                <tr>
+                  <td colSpan="6">
+                    <table className="product-page-table margin-top-10">
+                      <tr>
+                        <th className="td-vertical-center">Select</th>
+                        <th>Poza Produs</th>
+                        <th>Nume Produs</th>
+                        <th>Cantitate</th>
+                        <th>Pret Buc</th>
+
+                        <th>Valoare Totala</th>
+                      </tr>
+                      <tr>
+                        <td className="td-vertical-center">
+                          <input type="checkbox" />
+                        </td>
+                        <td>
+                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
+                        </td>
+                        <td>Paste Barilla</td>
+                        <td>10 Buc</td>
+                        <td>10 Ron</td>
+
+                        <td>100 Ron</td>
+                      </tr>
+                      <tr>
+                        <td className="td-vertical-center">
+                          <input type="checkbox" />
+                        </td>
+                        <td>
+                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
+                        </td>
+                        <td>Paste Barilla</td>
+                        <td>10 Buc</td>
+                        <td>10 Ron</td>
+
+                        <td>100 Ron</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3" className="orders-wrapper">
+                          <div className="orders-summary">
+                            <span>Valoare Totala Comanda : 100 Ron</span>
+                          </div>
+                        </td>
+                        <td colspan="3" className="td-vertical-left">
+                          <div className="orders-buttons">
+                            <div className="orders-accept-button">
+                              Mark as shipped
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </>
+            )}
+          </table>
+        </div>
+      </div>
     </>
   );
 };

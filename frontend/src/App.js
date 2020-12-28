@@ -3,30 +3,20 @@ import MainCss from "./assets/main/main.scss";
 import { BrowserRouter, Route } from "react-router-dom";
 import ReduxToastr from "react-redux-toastr";
 
-//Components
-import Navbar from "./components/Navbar";
-import TestComponent from "./components/TestComponent";
+import {
+  Login,
+  ForgotPassword,
+  ProductsPage,
+  Inquiries,
+  Orders,
+  WishList,
+  Cart,
+  IstoricComenzi,
+} from "./AppImports";
 
-import Login from "./components/Login";
-import ForgotPassword from "./components/ForgotPassword";
 import PrivateRoute from "./components/PrivateRoute";
 
-// Containers
-import Home from "./containers/Home";
-
-// --> SUPPLIER <--
-import ProductsPage from "./containers/Supplier/ProductsPage";
-
-import Inquiries from "./containers/Supplier/Inquiries";
-
-import Orders from "./containers/Supplier/Orders";
-
-// --> RESTAURANT <--
-import WishList from "./containers/Restaurant/WishList";
-import Cart from "./containers/Restaurant/Cart";
-
 import { Provider } from "react-redux";
-
 import { store } from "./redux/store";
 
 // Alert Options
@@ -46,15 +36,14 @@ const App = () => {
     <>
       <Provider store={store}>
         <BrowserRouter>
-          <Navbar />
           <ReduxToastr
             getState={(state) => state.toastr} // This is the default
             {...alertOptions}
           />
-          <Route path="/" exact component={Home} />
-          <Route path="/test" exact component={TestComponent} />
+          <Route path="/" exact component={ProductsPage} />
           <Route path="/cart" exact component={Cart} />
           <Route path="/wishlist" exact component={WishList} />
+          <Route path="/istoric-comenzi" exact component={IstoricComenzi} />
           <Route path="/inquiries" exact component={Inquiries} />
           <Route path="/products" exact component={ProductsPage} />
           <Route path="/orders" exact component={Orders} />

@@ -9,6 +9,9 @@ import {
   Divider,
   Header,
 } from "semantic-ui-react";
+
+import Logo from "../assets/img/logo.png";
+
 import { connect } from "react-redux";
 import { SetToken } from "../redux/actions/products";
 
@@ -29,67 +32,40 @@ const Login = ({ SetToken }) => {
   };
 
   return (
-    <Grid
-      verticalAlign="middle"
-      centered
-      fluid
-      className="custom-login-wrapper"
-    >
-      <Grid.Row>
-        <Grid.Column computer="6" mobile="15" tablet="12">
-          <Card fluid>
-            <Card.Content>
-              <Card.Header textAlign="center">
-                <Image
-                  src="https://react.semantic-ui.com/images/wireframe/image.png"
-                  size="tiny"
-                  alt="Logo"
-                />
-              </Card.Header>
-              <Divider horizontal>Login with username</Divider>
-              <Form onSubmit={onSubmit}>
-                <Form.Field>
-                  <label>Adresa de UserName</label>
-                  <input
-                    placeholder="Adresa de UserName"
-                    type="text"
-                    name="username"
-                    id="username"
-                    onChange={onChange}
-                    required
-                    value={formData.username}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Parola</label>
-                  <input
-                    placeholder="Parola dvs."
-                    type="password"
-                    name="password"
-                    id="password"
-                    onChange={onChange}
-                    required
-                    value={formData.password}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <Checkbox label="Tine-ma minte" />
-                </Form.Field>
-                <Button fluid color="green" type="submit">
-                  Login
-                </Button>
-              </Form>
-            </Card.Content>
-            <Divider horizontal>Nu ai cont ?</Divider>
-            <Header as="h5" icon textAlign="center">
-              <Header.Content>
-                Trimite-ne un email la contact@edesia.com
-              </Header.Content>
-            </Header>
-          </Card>
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+   <div className='login-center-wrapper'>
+    <div className='login-wrapper flex-column card-row padding-15'>
+      <img src={Logo}></img>
+
+      <form className='form-wrapper' onSubmit={onSubmit}>
+
+      <div className='form-item'>
+        <label>Email</label>
+        <input type='text' name="username"
+              id="username"
+              onChange={onChange}
+              required
+              value={formData.username}></input>
+        <i class="fal fa-envelope"></i>
+      </div>
+
+      <div className='form-item margin-top-25'>
+        <label>Password</label>
+        <input type='password' name="password"
+              id="password"
+              onChange={onChange}
+              required
+              value={formData.password}></input>
+        <i class="fal fa-key"></i>
+      </div>
+
+      <button className='login-button' type="submit">Login</button>
+
+      </form>
+
+
+      <div className='login-no-account'>Nu ai cont? <br/> Trimite-ne un e-mail la adresa contact@edesia.ro</div>
+    </div>
+   </div>
   );
 };
 
