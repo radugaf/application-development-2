@@ -24,9 +24,10 @@ urlpatterns = [
     path('get-user-update/', UserDetailReadUpdateAPIView.as_view(), name="get-user-update"),
 
     path('product/<int:id>', ProductCreateReadAPIView.as_view(), name='product'),
-    path('product-list/', ProductListUpdateAPIView.as_view(), name='product-list'),
+    path('restaurant-product-list/', RestaurantProductListAPIView.as_view(), name='restaurant-product-list'),
+    path('supplier-product-list/', SupplierProductListUpdateAPIView.as_view(), name='supplier-product-list'),
     path('product-create/', ProductCreateReadAPIView.as_view(), name='product-create'),
-    path('product-update/<int:id>', ProductListUpdateAPIView.as_view(), name='product-update'),
+    path('product-update/<int:id>', SupplierProductListUpdateAPIView.as_view(), name='product-update'),
     path('product-delete/<int:id>', ProductDeleteAPIView.as_view(), name='product-delete'),
 
     path('product-item-details/<int:product_item_id>/', ProductItemDetailsAPIView.as_view(), name='product-item-details'),
@@ -42,7 +43,11 @@ urlpatterns = [
 
     path('place-order/', PlaceOrderAPIView.as_view(), name='place-order'),
     path('restaurant-ordered-product-list/', RestaurantOrderedProductListAPIView.as_view(), name='restaurant-ordered-product-list'),
+    path('restaurant-shipped-product-list/', RestaurantOrderedProductListAPIView.as_view(), name='restaurant-shipped-product-list'),
     path('supplier-pending-product-list/', SupplierPendingProductListAPIView.as_view(), name='supplier-pending-product-list'),
+    path('supplier-awaiting-product-list/', SupplierAwaitingProductListAPIView.as_view(), name='supplier-awaiting-product-list'),
+    path('supplier-awaiting-product-update/', UpdateAwaitingProductItemAPIView.as_view(), name='supplier-awaiting-product-update'),
+    path('mark-orders-as-shipped/', MarkOrdersAsShippedAPIView.as_view(), name='mark-orders-as-shipped'),
     path('mark-orders-as-delivered/', MarkOrdersAsDeliveredAPIView.as_view(), name='mark-orders-as-delivered'),
 
     path('address/', AddressCreateReadAPIView.as_view(), name='address'),

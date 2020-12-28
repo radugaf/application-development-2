@@ -36,10 +36,10 @@ class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Contact info', {'fields': ('email',)}),
-        # ('User Type', {'fields': ('is_restaurant_owner', 'is_restaurant_staff', 'is_supplier', )}),
+        ('User Type', {'fields': ('is_restaurant_owner', 'is_restaurant_staff', 'is_supplier', )}),
         ('Profile', {'fields': ('first_name', 'last_name')}),
         # ('Status', {'fields': ('email_confirmed',)}),
-        # ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (

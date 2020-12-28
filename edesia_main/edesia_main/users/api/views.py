@@ -21,7 +21,7 @@ class UserRegistrationView(APIView):
 
     def post(self, request):
         try:
-            name = request.data.get('name')
+            username = request.data.get('username')
             bio = request.data.get('bio', '')
             password = request.data.get('password')
 
@@ -37,7 +37,7 @@ class UserRegistrationView(APIView):
                 return Response({'status': 'error', 'message': 'Only one User type has to be mentioned.'}, status=status.HTTP_400_BAD_REQUEST)    
 
             data = {
-                'username': name, # Such a lame mistake :(
+                'username': username,
                 'bio': bio,
                 'is_company_owner': is_company_owner,
                 'is_company_staff': is_company_staff,
@@ -61,27 +61,14 @@ class CheckUserTypeAPIView(APIView):
     def get(self, request):
         try:
             data = {}
-            print(request.user)
-            print(request.user.is_company_owner)
-            print(request.user.is_company_staff)
-            print(request.user.is_restaurant_staff)
-            print(request.user.is_restaurant_owner)
-            
             if request.user.is_company_owner:
                 data['is_company_owner'] = True
             if request.user.is_company_staff:
                 data['is_company_staff'] = True
             if request.user.is_restaurant_staff:
                 data['is_restaurant_staff'] = True
-                resurantdata= request.user.get_restaurant()
-                data['resturant_name'] =resurantdata.name
-                data['resturant_address'] = resurantdata.address
             if request.user.is_restaurant_owner:
                 data['is_restaurant_owner'] = True
-                resurantdata= request.user.get_restaurant()
-                data['resturant_name'] = resurantdata.name
-                data['resturant_address'] = resurantdata.address
-                
             
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 

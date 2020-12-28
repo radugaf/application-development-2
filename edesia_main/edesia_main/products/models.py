@@ -12,7 +12,7 @@ ADDRESS_CHOICES = (
 )
 
 class Restaurant(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL, related_name='restaurants_owned_by')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL, related_name='owned_restaurant')
     staff = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='restaurants_work_for')
 
     name = models.CharField(max_length=255)
@@ -74,6 +74,7 @@ class Product(models.Model):
     total_stock = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     instant_delivery = models.BooleanField()
+
     supplier_company = models.ForeignKey(Company, on_delete=models.CASCADE, default=None, null=True)
     last_updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, default=None, null=True)
 
@@ -125,8 +126,9 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     is_editable = models.BooleanField(default=True) # Editable for Restaurant user
 
-    paid = models.BooleanField(default=False)
+    is_shipped = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
+    is_paid = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
@@ -149,6 +151,8 @@ class OrderItem(models.Model):
     def __str__(self):
         return self.product.title
 
+    def get_total(self):
+        return round(self.quantity * self.final_price, 2)
 class Cart(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cart')
     products = models.ManyToManyField(OrderItem)
@@ -214,6 +218,7 @@ class Order(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     
+    
 
 class Enquiry(models.Model):
     items = models.ManyToManyField(OrderItem)
@@ -221,4 +226,18 @@ class Enquiry(models.Model):
 
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
-    
+
+class Invoice(models.Model):
+
+    invoice_no = models.CharField(max_length=255, default='N/A')
+
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.SET_NULL, null=True)
+    supplier_company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+
+    pdf_document = models.FileField(upload_to='invoice_documents/', null=True, blank=True) 
+
+    shipped_invoice = models.BooleanField(default=False)
+    delivered_invoice = models.BooleanField(default=False)
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)

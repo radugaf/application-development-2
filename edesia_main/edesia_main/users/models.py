@@ -24,7 +24,9 @@ class User(AbstractUser):
         )
 
     def get_restaurant(self):
-        return self.restaurants_work_for.first()
+        if self.restaurants_work_for.first():
+            return self.restaurants_work_for.first()
+        return self.owned_restaurant.first()
 
     def fullname(self):
         if(self.name):
@@ -33,4 +35,8 @@ class User(AbstractUser):
             return '{} {} - '.format(self.first_name, self.last_name)
 
     def get_company(self):
-        return self.company_work_for.first()
+        if self.company_work_for.first():
+            return self.company_work_for.first()
+        else:
+            return self.owned_company.first()
+        
