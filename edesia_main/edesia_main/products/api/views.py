@@ -607,30 +607,30 @@ class SupplierAwaitingProductListAPIView(APIView):
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UpdateAwaitingProductItemAPIView(APIView):
-    def post(self, request):
+    def post(self, request, id):
         try:
             company = request.user.get_company()
             if not company:
                 raise exceptions.NotFound('User associated to any Supplier Company')
 
-            product_item_id = request.data.get('product_item_id')
-            quantity_by_supplier_company = request.data.get('quantity_by_supplier_company', 0)
-            price_by_supplier_company = request.data.get('price_by_supplier_company', 0)
+            product_item_id = id
+            quantity = request.data.get('quantity', 0)
+            price = request.data.get('price', 0)
 
             user = request.user
             order_item = OrderItem.objects.get(id=product_item_id)
 
-            if not quantity_by_supplier_company or not not price_by_supplier_company:
+            if not quantity or not not price:
                 return Response({'status': 'error', 'message': 'Product price and quantity_by_supplier_company is required'}, status=status.HTTP_200_OK)
 
             if not order_item.is_editable:
                 return Response({'status': 'error', 'message': 'This order item cannot be edited'}, status=status.HTTP_200_OK)
 
-            order_item.quantity_by_supplier_company = quantity_by_supplier_company
-            order_item.price_by_supplier_company = price_by_supplier_company
+            order_item.quantity_by_supplier_company = quantity
+            order_item.price_by_supplier_company = price
 
-            order_item.quantity = quantity_by_supplier_company
-            order_item.final_price = price_by_supplier_company
+            order_item.quantity = quantity
+            order_item.final_price = price
             order_item.save()
             
             return Response({'status': 'success', 'message': 'Product Item has been updated in cart'}, status=status.HTTP_200_OK)
@@ -828,7 +828,7 @@ class MarkOrdersAsShippedAPIView(APIView):
 
             #TODO: Make Invoice after shipment.
             
-            
+
             return Response({'status': 'success', 'message': 'Marked product as delivered'}, status=status.HTTP_200_OK)
 
         except Exception as e:

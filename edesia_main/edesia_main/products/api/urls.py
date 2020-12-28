@@ -46,7 +46,7 @@ urlpatterns = [
     path('restaurant-shipped-product-list/', RestaurantOrderedProductListAPIView.as_view(), name='restaurant-shipped-product-list'),
     path('supplier-pending-product-list/', SupplierPendingProductListAPIView.as_view(), name='supplier-pending-product-list'),
     path('supplier-awaiting-product-list/', SupplierAwaitingProductListAPIView.as_view(), name='supplier-awaiting-product-list'),
-    path('supplier-awaiting-product-update/', UpdateAwaitingProductItemAPIView.as_view(), name='supplier-awaiting-product-update'),
+    path('supplier-awaiting-product-update/<int:id>', UpdateAwaitingProductItemAPIView.as_view(), name='supplier-awaiting-product-update'),
     path('mark-orders-as-shipped/', MarkOrdersAsShippedAPIView.as_view(), name='mark-orders-as-shipped'),
     path('mark-orders-as-delivered/', MarkOrdersAsDeliveredAPIView.as_view(), name='mark-orders-as-delivered'),
 
