@@ -5,8 +5,8 @@ import os
 
 from io import BytesIO
 
-from weasyprint.fonts import FontConfiguration
-from weasyprint import HTML
+# from weasyprint.fonts import FontConfiguration
+# from weasyprint import HTML
 from django.template.loader import render_to_string
 from django.core.files.storage import FileSystemStorage
 
@@ -919,15 +919,15 @@ class MarkOrdersAsShippedAPIView(APIView):
                 'invoice_creation_date': datetime.datetime.now().strftime('%d %b %Y - %X')
             }
 # uncomment
-            pdf = render_to_string('invoice_shipped.html', context)
-            html = HTML(string=pdf)
-            html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
+            # pdf = render_to_string('invoice_shipped.html', context)
+            # html = HTML(string=pdf)
+            # html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
 
-            fs = FileSystemStorage('/tmp')
-            pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
+            # fs = FileSystemStorage('/tmp')
+            # pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
 
-            filename = f'Shipped_{instance.invoice_no}.pdf'
-            instance.pdf_document.save(filename, File(pdf))
+            # filename = f'Shipped_{instance.invoice_no}.pdf'
+            # instance.pdf_document.save(filename, File(pdf))
 
             return Response({'status': 'success', 'message': 'Marked product as Shipped'}, status=status.HTTP_200_OK)
 
@@ -966,15 +966,15 @@ class MarkOrdersAsDeliveredAPIView(APIView):
                 'invoice_creation_date': datetime.datetime.now().strftime('%d %b %Y - %X')
             }
 # uncommet
-            pdf = render_to_string('invoice_delivered.html', context)
-            html = HTML(string=pdf)
-            html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
+            # pdf = render_to_string('invoice_delivered.html', context)
+            # html = HTML(string=pdf)
+            # html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
 
-            fs = FileSystemStorage('/tmp')
-            pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
+            # fs = FileSystemStorage('/tmp')
+            # pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
 
-            filename = f'Delivered_{instance.invoice_no}.pdf'
-            instance.pdf_document.save(filename, File(pdf))
+            # filename = f'Delivered_{instance.invoice_no}.pdf'
+            # instance.pdf_document.save(filename, File(pdf))
 
             return Response({'status': 'success', 'message': 'Marked product as delivered'}, status=status.HTTP_200_OK)
 

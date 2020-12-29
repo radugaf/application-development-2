@@ -33,16 +33,7 @@ const Cart = ({
 
   useEffect(() => {
     GetAddToCart();
-    carts &&
-      carts.instant_delivery_items &&
-      carts.instant_delivery_items.map((cart) => {
-        setFormData([
-          {
-            product_item_id: cart.product_item_id,
-            product_quantity: cart.product_quantity,
-          },
-        ]);
-      });
+   
   }, []);
 
   const onDeleteCart = async (e, product_item_id) => {
@@ -192,7 +183,7 @@ const Cart = ({
                   carts.not_instant_delivery_items.map((cart) => {
                     if (
                       cart.is_enquiry_solved &&
-                      cart.custom_status === "CUSTOM_UPDATED"
+                      cart.custom_status === "COMPLETED"
                     ) {
                       return displayProduct(cart);
                     }
@@ -291,7 +282,7 @@ const Cart = ({
               carts.not_instant_delivery_items.map((cart) => {
                 if (
                   !cart.is_enquiry_solved &&
-                  cart.custom_status !== "CUSTOM_UPDATED"
+                  cart.custom_status !== "COMPLETED"
                 ) {
                   return (
                     <tr>
