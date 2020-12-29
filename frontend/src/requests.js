@@ -21,6 +21,8 @@ export default {
   //   Orders
   GET_RESTAURANT_ORDERS: "restaurant-ordered-product-list/",
   PLACE_ORDER_RESTAURANT_ORDER: "place-order/",
+  MARK_ORDER_AS_SHIPPED_SUPPLIER_ORDER: "mark-orders-as-shipped/",
+
   MARK_AS_DELIVERY_SUPPLIER_ORDER: "mark-orders-as-delivered/",
   GET_SUPPLIER_ORDERS: "supplier-pending-product-list/",
 };

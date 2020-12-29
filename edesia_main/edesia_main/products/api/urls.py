@@ -43,12 +43,13 @@ urlpatterns = [
 
     path('place-order/', PlaceOrderAPIView.as_view(), name='place-order'),
     path('restaurant-ordered-product-list/', RestaurantOrderedProductListAPIView.as_view(), name='restaurant-ordered-product-list'),
-    path('restaurant-shipped-product-list/', RestaurantOrderedProductListAPIView.as_view(), name='restaurant-shipped-product-list'),
+    path('restaurant-shipped-product-list/', RestaurantShippedProductListAPIView.as_view(), name='restaurant-shipped-product-list'),
     path('supplier-pending-product-list/', SupplierPendingProductListAPIView.as_view(), name='supplier-pending-product-list'),
     path('supplier-awaiting-product-list/', SupplierAwaitingProductListAPIView.as_view(), name='supplier-awaiting-product-list'),
     path('supplier-awaiting-product-update/<int:id>', UpdateAwaitingProductItemAPIView.as_view(), name='supplier-awaiting-product-update'),
     path('mark-orders-as-shipped/', MarkOrdersAsShippedAPIView.as_view(), name='mark-orders-as-shipped'),
     path('mark-orders-as-delivered/', MarkOrdersAsDeliveredAPIView.as_view(), name='mark-orders-as-delivered'),
+    path('invoice-list/', InvoiceListAPIView.as_view(), name='invoice-list'),
 
     path('address/', AddressCreateReadAPIView.as_view(), name='address'),
     path('address-list/', AddressListUpdateAPIView.as_view(), name='address-list'),

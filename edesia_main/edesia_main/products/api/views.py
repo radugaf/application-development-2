@@ -1,12 +1,20 @@
 import datetime
 import json
 import time
+import os
 
 from io import BytesIO
-from django.core.files import File
 
+# from weasyprint.fonts import FontConfiguration
+# from weasyprint import HTML
+from django.template.loader import render_to_string
+from django.core.files.storage import FileSystemStorage
+
+from django.core.files import File
+from django.conf import settings
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+from django.db.models import Avg, Count, Min, Sum
 
 from rest_framework import generics
 from rest_framework.generics import ListAPIView
@@ -180,7 +188,6 @@ class CompanyDeleteAPIView(APIView):
 
             company_id = id
             company = Company.objects.get(id=company_id)
-
             if company.owner != request.user and not request.user.is_superuser:
                 raise exceptions.PermissionDenied('You don\'t have permission')
 
@@ -350,7 +357,7 @@ class SupplierProductListUpdateAPIView(APIView):
     def get(self, request):
         company = request.user.get_company()
         if not company:
-            raise exceptions.NotFound('User associated to any Supplier Company')
+            raise exceptions.NotFound('User not associated to any Supplier Company')
 
         serializer = self.serializer_class(Product.objects.filter(supplier_company=company), many=True)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
@@ -414,9 +421,9 @@ class AddProductInCartAPIView(APIView):
 
             if not product.instant_delivery:
                 order_item.is_custom = True
+                order_item.custom_status = 'CUSTOM'
 
-            if product.instant_delivery:
-                order_item.final_price = product.price
+            order_item.final_price = product.price
 
             order_item.save()
 
@@ -460,12 +467,10 @@ class UpdateProductInCartAPIView(APIView):
             if not order_item.is_editable:
                 return Response({'status': 'error', 'message': 'This order item cannot be edited'}, status=status.HTTP_200_OK)
 
+            order_item.custom_status = 'CUSTOM_UPDATED'
             order_item.quantity = quantity
-            if order_item.is_custom and price:
-                order_item.price_by_restaurant = price
-
-            if order_item.is_custom and quantity:
-                order_item.quantity_by_restaurant = quantity
+            order_item.price_by_restaurant = price
+            order_item.quantity_by_restaurant = quantity
 
             order_item.save()
 
@@ -577,10 +582,12 @@ class AddItemsInEnquiry(APIView):
 class EnquiryListAPIView(APIView):
     def get(self, request):
         try:
+            print(request.user)
             company = request.user.get_company()
+            print(company)
             if not company:
-                raise exceptions.NotFound('User associated to any Supplier Company')
 
+                raise exceptions.NotFound('User not associated to any Supplier Company')
             enquiries = Enquiry.objects.filter(items__product__supplier_company=company)
 
             data = {}
@@ -608,7 +615,7 @@ class SupplierAwaitingProductListAPIView(APIView):
         try:
             company = request.user.get_company()
             if not company:
-                raise exceptions.NotFound('User associated to any Supplier Company')
+                raise exceptions.NotFound('User not associated to any Supplier Company')
 
             data = {}
             orderitem_list = OrderItem.objects.filter(
@@ -622,7 +629,7 @@ class SupplierAwaitingProductListAPIView(APIView):
 
                     data[restaurant.name].append({
                         'product_item_id': order_item.id,
-                        'product_title': order_item.product_title,
+                        'product_title': order_item.product.title,
                         'price_by_supplier_company': float(order_item.price_by_supplier_company),
                         'quantity_by_supplier_company': order_item.quantity_by_supplier_company,
                     })
@@ -637,7 +644,7 @@ class UpdateAwaitingProductItemAPIView(APIView):
         try:
             company = request.user.get_company()
             if not company:
-                raise exceptions.NotFound('User associated to any Supplier Company')
+                raise exceptions.NotFound('User not associated to any Supplier Company')
 
             product_item_id = id
             quantity = request.data.get('quantity', 0)
@@ -670,7 +677,7 @@ class DeclineEnquiryRequestAPIView(APIView):
         try:
             company = request.user.get_company()
             if not company:
-                raise exceptions.NotFound('User associated to any Supplier Company')
+                raise exceptions.NotFound('User not associated to any Supplier Company')
 
             product_item_id = request.data.get('product_item_id')
             enquiry_id = request.data.get('enquiry_id')
@@ -694,7 +701,7 @@ class UpdatePriceQuantityInEnquiryAPIVIew(APIView):
         try:
             company = request.user.get_company()
             if not company:
-                raise exceptions.NotFound('User associated to any Supplier Company')
+                raise exceptions.NotFound('User not associated to any Supplier Company')
 
             product_item_id = request.data.get('product_item_id')
             enquiry_id = request.data.get('enquiry_id')
@@ -731,7 +738,7 @@ class PlaceOrderAPIView(APIView):
             if not product_item_list:
                 return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_200_OK)
 
-            items = OrderItem.objects.filter(id__in=product_item_list, final_price__gt=0, ordered=False)
+            items = OrderItem.objects.filter(id__in=product_item_list, ordered=False)
 
             if not items:
                 return Response({'status': 'error', 'message': 'There is no data of the given product list'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -773,14 +780,13 @@ class RestaurantShippedProductListAPIView(APIView):
         try:
             user = request.user
             order_items = user.orderitems.filter(ordered=True, is_shipped=True, is_delivered=False)
-
             data = {}
 
             distinct_companies = order_items.order_by().values('product__supplier_company').distinct()
             for company in distinct_companies:
-
+                company = Company.objects.get(id=company['product__supplier_company'])
                 if not data.get(company.name):
-                    data[company.name] = []
+                    data[company.name] = {}
 
                 distinct_dates = order_items.order_by().values('modified_date__date').distinct()
                 for date in distinct_dates:
@@ -790,7 +796,7 @@ class RestaurantShippedProductListAPIView(APIView):
                     if not data[company.name].get(date_string):
                         data[company.name][date_string] = []
 
-                    for order_item in order_items.filter(product__supplier_company=company, modified_date=date):
+                    for order_item in order_items.filter(product__supplier_company=company, modified_date__date=date):
 
                         data[company.name][date_string].append({
                             'product_item_id': order_item.id,
@@ -804,19 +810,21 @@ class RestaurantShippedProductListAPIView(APIView):
 
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 
-        except Exception as e:
+        except IndexError as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class SupplierPendingProductListAPIView(APIView):
     def get(self, request):
         try:
-            company = request.user.get_company()
-            if not company:
-                raise exceptions.NotFound('User associated to any Supplier Company')
+            print(request.user)
 
-            order_items = request.user.orderitems.filter(
-                ordered=True, is_shipped=False, product__supplier_company=company)
+            company = request.user.get_company()
+            print(company)
+            if not company:
+                raise exceptions.NotFound('User not associated to any Supplier Company')
+
+            order_items = OrderItem.objects.filter(ordered=True, is_shipped=False, product__supplier_company=company)
 
             data = {}
             for order_item in order_items:
@@ -833,8 +841,42 @@ class SupplierPendingProductListAPIView(APIView):
                     'product_image_url': order_item.product.image_main.url,
                     'product_quantity': order_item.quantity,
                     'product_price': float(order_item.final_price),
+                    'total': order_item.get_total(),
                     'is_editable': order_item.is_editable,
+                    'is_shipped': order_item.is_shipped,
                     'is_delivered': order_item.is_delivered,
+                })
+            return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class InvoiceListAPIView(APIView):
+    def get(self, request):
+        try:
+            company = request.user.get_company()
+            restaurant = request.user.get_restaurant()
+
+            if not company and not restaurant:
+                raise exceptions.NotFound('User not associated to any Supplier Company or any Restaurant')
+
+            invoices = Invoice.objects.filter(~Q(pdf_document=''))
+            if company:
+                invoices = invoices.filter(supplier_company=company)
+            if restaurant:
+                invoices = invoices.filter(restaurant=restaurant)
+
+            data = []
+            for invoice in invoices:
+                data.append({
+                    'id': invoice.id,
+                    'invoice_number': invoice.invoice_no,
+                    'is_shipped_document': invoice.shipped_invoice,
+                    'is_delivered_document': invoice.delivered_invoice,
+                    'restaurant': invoice.restaurant.name,
+                    'supplier': invoice.supplier_company.name,
+                    'document_link': invoice.pdf_document.url,
                 })
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 
@@ -848,7 +890,7 @@ class MarkOrdersAsShippedAPIView(APIView):
         try:
             company = request.user.get_company()
             if not company:
-                raise exceptions.NotFound('User associated to any Supplier Company')
+                raise exceptions.NotFound('User not associated to any Supplier Company')
 
             product_item_list = request.data.get('product_items', [])
             user = request.user
@@ -856,12 +898,38 @@ class MarkOrdersAsShippedAPIView(APIView):
             if not product_item_list:
                 return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_200_OK)
 
-            items = OrderItem.objects.filter(id__in=product_item_list)
-            items.update(is_shipped=True)
+            order_items = OrderItem.objects.filter(id__in=product_item_list)
+            order_items.update(is_shipped=True)
 
             # TODO: Make Invoice after shipment.
+            # order_items = OrderItem.objects.all()
 
-            return Response({'status': 'success', 'message': 'Marked product as delivered'}, status=status.HTTP_200_OK)
+            total_sum = sum(order_item.get_total() for order_item in order_items)
+            company = order_items.first().product.supplier_company
+            restaurant = order_items.first().user.get_restaurant()
+
+            instance = Invoice.objects.create(supplier_company=company, restaurant=restaurant, shipped_invoice=True)
+
+            context = {
+                'order_items': order_items,
+                'company': company,
+                'restaurant': restaurant,
+                'total_sum': total_sum,
+                'invoice_no': instance.invoice_no,
+                'invoice_creation_date': datetime.datetime.now().strftime('%d %b %Y - %X')
+            }
+# uncomment
+            # pdf = render_to_string('invoice_shipped.html', context)
+            # html = HTML(string=pdf)
+            # html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
+
+            # fs = FileSystemStorage('/tmp')
+            # pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
+
+            # filename = f'Shipped_{instance.invoice_no}.pdf'
+            # instance.pdf_document.save(filename, File(pdf))
+
+            return Response({'status': 'success', 'message': 'Marked product as Shipped'}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -877,10 +945,36 @@ class MarkOrdersAsDeliveredAPIView(APIView):
             if not product_item_list:
                 return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_200_OK)
 
-            items = OrderItem.objects.filter(id__in=product_item_list)
-            items.update(is_delivered=True)
+            order_items = OrderItem.objects.filter(id__in=product_item_list)
+            order_items.update(is_delivered=True)
 
             # TODO: Make Invoice after Delivered.
+            # order_items = OrderItem.objects.all()
+
+            total_sum = sum(order_item.get_total() for order_item in order_items)
+            company = order_items.first().product.supplier_company
+            restaurant = order_items.first().user.get_restaurant()
+
+            instance = Invoice.objects.create(supplier_company=company, restaurant=restaurant, delivered_invoice=True)
+
+            context = {
+                'order_items': order_items,
+                'company': company,
+                'restaurant': restaurant,
+                'total_sum': total_sum,
+                'invoice_no': instance.invoice_no,
+                'invoice_creation_date': datetime.datetime.now().strftime('%d %b %Y - %X')
+            }
+
+            # pdf = render_to_string('invoice_delivered.html', context)
+            # html = HTML(string=pdf)
+            # html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
+
+            # fs = FileSystemStorage('/tmp')
+            # pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
+
+            # filename = f'Delivered_{instance.invoice_no}.pdf'
+            # instance.pdf_document.save(filename, File(pdf))
 
             return Response({'status': 'success', 'message': 'Marked product as delivered'}, status=status.HTTP_200_OK)
 

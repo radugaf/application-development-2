@@ -205,7 +205,7 @@ const Cart = ({
                   carts.not_instant_delivery_items.map((cart) => {
                     if (
                       cart.is_enquiry_solved &&
-                      cart.custom_status === "COMPLETED"
+                      cart.custom_status === "CUSTOM_UPDATED"
                     ) {
                       return displayProduct(cart);
                     }
@@ -304,7 +304,7 @@ const Cart = ({
               carts.not_instant_delivery_items.map((cart) => {
                 if (
                   !cart.is_enquiry_solved &&
-                  cart.custom_status !== "COMPLETED"
+                  cart.custom_status !== "CUSTOM_UPDATED"
                 ) {
                   return (
                     <tr>

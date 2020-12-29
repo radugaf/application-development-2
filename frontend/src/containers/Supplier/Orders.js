@@ -8,11 +8,12 @@ import SideMenu from "../../components/SideMenu";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 
-import { GetSupplierOrder, MarkAsDelivery } from "../../redux/actions/products";
+import { GetSupplierOrder, MarkAsDelivery,MarkAsShipped } from "../../redux/actions/products";
 import { URL, CREDENTIALS } from "../../requests";
 
-const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
-  const [veziComanda, setVeziComanda] = useState(false);
+const Orders = ({ GetSupplierOrder, MarkAsDelivery,MarkAsShipped, orders, user }) => {
+  const [veziComanda, setVeziComanda] = useState();
+  const [currentSelectProduct, setCurrentSelectProduct] = useState([]);
 
   // const [formData, setFormData] = useState({
   //   product_item_id: 0, //here is product id is given by default
@@ -21,6 +22,7 @@ const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
   const userType = user;
   useEffect(() => {
     GetSupplierOrder();
+    // MarkAsShipped()
   }, []);
 
   const acceptOrder = async (e, order_id) => {
@@ -31,13 +33,31 @@ const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
     window.location.href = "/orders";
   };
 
+  const handleCheck = (e, product_item_id) => {
+    const checked = e.target.checked;
+    if (checked) {
+      setCurrentSelectProduct((product) => [...product, product_item_id]);
+    } else {
+      const newSelectProduct =
+        currentSelectProduct &&
+        currentSelectProduct.filter((product) => +product !== +product_item_id);
+      setCurrentSelectProduct(newSelectProduct);
+    }
+  };
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    MarkAsShipped({ product_id: currentSelectProduct });
+    toastr.success("Mark Order as Shipped", "Order Accepted");
+    GetSupplierOrder();
+  };
+
   return (
     <>
-    <NavBar />
+      <NavBar />
 
       <div className="content-wrapper">
-      
-      <SideMenu />
+        <SideMenu />
 
         <div className="products-wrapper">
           <div className="products-name-view card-row flex-row vertical-center padding-15">
@@ -55,93 +75,23 @@ const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
                 <th className="td-vertical-center">See Details</th>
               </tr>
             )}
-            <tr>
-              <td>Edesia</td>
-              <td>12.02.2020</td>
-              <td>Total order amount</td>
-
-              <td>
-                <div
-                  className="offers-vezi-detalii"
-                  onClick={() => setVeziComanda(!veziComanda)}
-                >
-                  See Details
-                </div>
-              </td>
-            </tr>
-            {veziComanda && (
-              <>
+            {Object.keys(orders) &&
+              Object.keys(orders).map((key) => (
                 <tr>
-                  <td colSpan="6">
-                    <table className="product-page-table margin-top-10">
-                      <tr>
-                        <th className="td-vertical-center">Select</th>
-                        <th>Poza Produs</th>
-                        <th>Nume Produs</th>
-                        <th>Cantitate</th>
-                        <th>Pret Buc</th>
+                  <td>{key}</td>
+                  <td>12.02.2020</td>
+                  <td>Total order amount</td>
 
-                        <th>Valoare Totala</th>
-                      </tr>
-                      <tr>
-                        <td className="td-vertical-center">
-                          <input type="checkbox" />
-                        </td>
-                        <td>
-                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
-                        </td>
-                        <td>Paste Barilla</td>
-                        <td>10 Buc</td>
-                        <td>10 Ron</td>
-
-                        <td>100 Ron</td>
-                      </tr>
-                      <tr>
-                        <td className="td-vertical-center">
-                          <input type="checkbox" />
-                        </td>
-                        <td>
-                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
-                        </td>
-                        <td>Paste Barilla</td>
-                        <td>10 Buc</td>
-                        <td>10 Ron</td>
-
-                        <td>100 Ron</td>
-                      </tr>
-                      <tr>
-                        <td colspan="3" className="orders-wrapper">
-                          <div className="orders-summary">
-                            <span>Valoare Totala Comanda : 100 Ron</span>
-                          </div>
-                        </td>
-                        <td colspan="3" className="td-vertical-left">
-                          <div className="orders-buttons">
-                            <div className="orders-accept-button">
-                              Mark as shipped
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </table>
+                  <td>
+                    <div
+                      className="offers-vezi-detalii"
+                      onClick={() => setVeziComanda(key)}
+                    >
+                      See Details
+                    </div>
                   </td>
                 </tr>
-              </>
-            )}
-            <tr>
-              <td>Edesia</td>
-              <td>12.02.2020</td>
-              <td>Total order amount</td>
-
-              <td>
-                <div
-                  className="offers-vezi-detalii"
-                  onClick={() => setVeziComanda(!veziComanda)}
-                >
-                  See Details
-                </div>
-              </td>
-            </tr>
+              ))}
             {veziComanda && (
               <>
                 <tr>
@@ -156,41 +106,40 @@ const Orders = ({ GetSupplierOrder, MarkAsDelivery, orders, user }) => {
 
                         <th>Valoare Totala</th>
                       </tr>
-                      <tr>
-                        <td className="td-vertical-center">
-                          <input type="checkbox" />
-                        </td>
-                        <td>
-                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
-                        </td>
-                        <td>Paste Barilla</td>
-                        <td>10 Buc</td>
-                        <td>10 Ron</td>
 
-                        <td>100 Ron</td>
-                      </tr>
-                      <tr>
-                        <td className="td-vertical-center">
-                          <input type="checkbox" />
-                        </td>
-                        <td>
-                          <img src="https://s13emagst.akamaized.net/products/29978/29977219/images/res_52a31ed1a00dd90b9b56b1dc12831238.jpg?width=450&height=450&hash=8F15B0BBA625680557F48724D557F67A"></img>
-                        </td>
-                        <td>Paste Barilla</td>
-                        <td>10 Buc</td>
-                        <td>10 Ron</td>
-
-                        <td>100 Ron</td>
-                      </tr>
+                      {orders &&
+                        orders[veziComanda] &&
+                        orders[veziComanda].map((inquire) => (
+                          <tr>
+                            <td className="td-vertical-center">
+                              <input
+                                type="checkbox"
+                                onChange={(e) =>
+                                  handleCheck(e, inquire.product_item_id)
+                                }
+                              />
+                            </td>
+                            <td>
+                              <img
+                                src={`${URL}${inquire.product_image_url}`}
+                              ></img>
+                            </td>
+                            <td>{inquire.product_title}</td>
+                            <td>{inquire.product_quantity} Buc</td>
+                            <td>{inquire.product_price} Ron</td>
+                            <td>{inquire.total} Ron</td>
+                          </tr>
+                        ))}
                       <tr>
                         <td colspan="3" className="orders-wrapper">
                           <div className="orders-summary">
-                            <span>Valoare Totala Comanda : 100 Ron</span>
+                            {/* TODO */}
+                            <span>Valoare Totala Comanda : Ron</span>
                           </div>
                         </td>
                         <td colspan="3" className="td-vertical-left">
                           <div className="orders-buttons">
-                            <div className="orders-accept-button">
+                            <div className="orders-accept-button" onClick={onFormSubmit}>
                               Mark as shipped
                             </div>
                           </div>
@@ -218,4 +167,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   GetSupplierOrder,
   MarkAsDelivery,
+  MarkAsShipped
 })(Orders);

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Example 1</title>
+  <title>Shipped Invoice</title>
   <style>
     .clearfix:after {
       content: "";
@@ -145,12 +145,12 @@
   </style>
 </head>
 
-<body>
+<body style="font-size: 10px; width: 100%; padding-right: 20px;">
   <header class="clearfix">
     <div id="logo">
-      <img src="../static/images/logo-temp.png">
+      
     </div>
-    <h1>SHIPPED INVOICE</h1>
+    <h1>SHIPPED INVOICE <strong>#{{invoice_no}}</strong></h1>
     <div id="company" class="clearfix">
       <div>{{company.name|default:"Company Name.."}}</div>
       <div>{{company.address|default:"Company Address.."}}</div>
@@ -158,32 +158,31 @@
       <!-- <div><a href="mailto:company@example.com">company@example.com</a></div> -->
     </div>
     <div id="project">
-      <div><span>CLIENT</span> {{restaurant.name|default:"Restaurant Name.."}}</div>
+      <div><span>CLIENT</span>{{restaurant.name|default:"Restaurant Name.."}}</div>
       <div><span>ADDRESS</span>{{restaurant.address|default:"Restaurant Address.."}}</div>
-      <!-- <div><span>PHONE</span> <a href="mailto:john@example.com">john@example.com</a></div> -->
+      <div><span>PHONE</span>{{restaurant.phone_number}}</div>
       <div><span>DATE</span>{{invoice_creation_date}}</div>
     </div>
   </header>
   <main>
     
-    {% block comment %}
-    <table>
+    <table  cellpadding="5" cellspacing="0" width="100%">
       <thead>
         <tr>
-          <th class="service">PRODUCT</th>
-          <th class="desc">DESCRIPTION</th>
-          <th class="desc">IS_SHIPPED</th>
-          <th class="desc">IS_DELIVERED</th>
-          <th>PRICE</th>
-          <th>QTY</th>
-          <th>TOTAL</th>
+          <th width=20 class="service">PRODUCT</th>
+          <th width=20 class="desc">DESCRIPTION</th>
+          <th width=20 class="desc">IS_SHIPPED</th>
+          <th width=20 class="desc">IS_DELIVERED</th>
+          <th width=20>PRICE</th>
+          <th width=20>QTY</th>
+          <th width=20>TOTAL</th>
         </tr>
       </thead>
       <tbody>
         
         {% for order_item in order_items %}
           <tr>
-            <td class="service">{{order_item.product.name}}</td>
+            <td class="service">{{order_item.product.title}}</td>
             <td class="desc">{{order_item.product.description}}</td>
             <td class="unit">{{order_item.is_shipped}}</td>
             <td class="unit">{{order_item.is_delivered}}</td>
@@ -191,29 +190,14 @@
             <td class="qty">{{order_item.quantity}}</td>
             <td class="total">${{order_item.get_total}}</td>
           </tr>
-        
         {% endfor %}
-        <tr>
-          <td class="service">Design</td>
-          <td class="desc">Creating a recognizable design solution based on the company's existing visual identity</td>
-          <td class="unit">True</td>
-          <td class="unit">True</td>
-          <td class="unit">$40.00</td>
-          <td class="qty">26</td>
-          <td class="total">$1,040.00</td>
-        </tr>
-        <tr>
-          <td colspan="7" class="total">$1,300.00</td>
-        </tr>
+
         <tr>
           <td colspan="6" class="grand total">GRAND TOTAL</td>
-          <td class="grand total">$6,500.00</td>
+          <td class="grand total">${{total_sum}}</td>
         </tr>
       </tbody>
     </table>
-      
-    {% endblock comment %}
-      
 
     <div id="notices">
       <div>NOTICE:</div>

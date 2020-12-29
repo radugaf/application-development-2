@@ -72,7 +72,7 @@ class Product(models.Model):
     description = models.TextField(default='')
     image_main = models.ImageField(upload_to="upload/images/")
     total_stock = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.FloatField()
     instant_delivery = models.BooleanField()
 
     supplier_company = models.ForeignKey(Company, on_delete=models.CASCADE, default=None, null=True)
@@ -116,6 +116,8 @@ class ProductVariation(models.Model):
 class OrderItem(models.Model):
     STATUS_CHOICES = (
         ('NOT_CUSTOM', 'NOT_CUSTOM'),
+        ('CUSTOM', 'CUSTOM'),
+        ('CUSTOM_UPDATED', 'CUSTOM_UPDATED'),
         ('PENDING', 'PENDING'),
         ('COMPLETED', 'COMPLETED'),
     )
@@ -141,7 +143,6 @@ class OrderItem(models.Model):
     quantity_by_supplier_company = models.IntegerField(default=0)
     price_by_restaurant = models.IntegerField(default=0)
     price_by_supplier_company = models.IntegerField(default=0)
-    final_quantity = models.IntegerField(default=0)
     final_price = models.FloatField(default=0)
 
     ordered_date = models.DateTimeField(blank=True, null=True)
@@ -150,9 +151,10 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return self.product.title
-
+    
     def get_total(self):
         return round(self.quantity * self.final_price, 2)
+        
 class Cart(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cart')
     products = models.ManyToManyField(OrderItem)

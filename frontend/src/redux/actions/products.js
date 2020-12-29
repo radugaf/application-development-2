@@ -432,6 +432,42 @@ export const MarkAsDelivery = (data) => {
   };
 };
 
+
+// Mark Order as Shipped Supplier 
+export const MarkAsShipped = (data) => {
+  return async (dispatch, getState) => {
+    // Loading
+    dispatch({
+      type: "PRODUCT_LOADING",
+      payload: true,
+    });
+    //   Get Token from state
+
+    try {
+      const markAsAShipped = await axios.post(
+        `${BACKEND_URL}${requests.MARK_ORDER_AS_SHIPPED_SUPPLIER_ORDER}`,
+        {
+          //TODO: This is in array
+          product_items: data.product_id,
+        },
+        tokenConfig(getState)
+      );
+      GetSupplierOrder();
+      console.log({ markAsAShipped });
+      // dispatch({ type: "ADD_TO_CART", payload: addToCartProduct.data });
+      await checkUserType(dispatch, getState);
+
+      dispatch({
+        type: "STOP_LOADING",
+      });
+    } catch (error) {
+      console.log({ error });
+      errorHandle(error, dispatch);
+    }
+  };
+};
+
+
 // Place Order
 export const PlaceOrder = (data) => {
   return async (dispatch, getState) => {
@@ -546,7 +582,7 @@ export const Logout = () => {
 /** Common Actions */
 // Error Handle
 export const errorHandle = (error, dispatch) => {
-  console.log({ error: error.response.data });
+  console.log({ error: error });
   if (
     error &&
     error.response &&
