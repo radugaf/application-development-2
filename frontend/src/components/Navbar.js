@@ -109,18 +109,22 @@ class Navbar extends React.Component {
       //     </button>
       //   )}
       // </Menu>
+      
+      
       <div className="navigation card-row">
         <a href="/">
           <img src={Logo}></img>
         </a>
         <div className="navigation-container">
+        {user && Object.keys(user).length <= 0 && (
           <button className="navbar-button-login">
             <a href="/login">
               <span>Login</span>
               <i class="far fa-sign-in-alt"></i>
             </a>
           </button>
-
+          )}
+           {user && Object.keys(user).length > 0 && (
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -133,7 +137,7 @@ class Navbar extends React.Component {
               <span>Log Out</span>
               <i class="far fa-power-off"></i>
             </a>
-          </button>
+          </button>)}
         </div>
       </div>
     );

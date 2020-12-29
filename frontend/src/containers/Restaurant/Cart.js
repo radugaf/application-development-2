@@ -10,8 +10,6 @@ import {
   DeleteCart,
   UpdateCart,
   PlaceOrder,
-  GetRestaurantOrder,
-  MarkAsDelivery,
   GetInquires,
 } from "../../redux/actions/products";
 import { URL } from "../../requests";
@@ -22,9 +20,6 @@ const Cart = ({
   DeleteCart,
   UpdateCart,
   PlaceOrder,
-  GetRestaurantOrder,
-  pendingOrders,
-  MarkAsDelivery,
   user,
   GetInquires,
   inquires,
@@ -38,7 +33,6 @@ const Cart = ({
 
   useEffect(() => {
     GetAddToCart();
-    GetRestaurantOrder();
     carts &&
       carts.instant_delivery_items &&
       carts.instant_delivery_items.map((cart) => {
@@ -85,13 +79,6 @@ const Cart = ({
     toastr.success("Create Order", "Order Created successfully");
   };
 
-  const acceptOrder = async (e, order_id) => {
-    e.preventDefault();
-    await MarkAsDelivery({ product_id: order_id });
-    GetRestaurantOrder();
-    toastr.success("Order Delivered", "Order Mark As Delivery successfully");
-    window.location.href = "/cart";
-  };
 
   const rejectOrder = (e) => {
     e.preventDefault();
@@ -338,7 +325,6 @@ const mapStateToProps = (state) => {
   return {
     inquires: state.products.inquiredDetails,
     carts: state.products.cartsDetails,
-    pendingOrders: state.products.restaurantOrdersDetails,
     user: state.products.user,
   };
 };
@@ -348,6 +334,4 @@ export default connect(mapStateToProps, {
   DeleteCart,
   UpdateCart,
   PlaceOrder,
-  GetRestaurantOrder,
-  MarkAsDelivery,
 })(Cart);

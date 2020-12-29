@@ -377,7 +377,7 @@ export const GetRestaurantOrder = () => {
 
     try {
       const restaurantOrders = await axios.get(
-        `${BACKEND_URL}${requests.GET_RESTAURANT_ORDERS}`,
+        `${BACKEND_URL}${requests.RESURANT_SHIPPED_PEODUCT_LIST}`,
         tokenConfig(getState)
       );
       console.log({ restaurantOrders });
@@ -397,6 +397,7 @@ export const GetRestaurantOrder = () => {
   };
 };
 
+
 // Mark as Delivery
 export const MarkAsDelivery = (data) => {
   return async (dispatch, getState) => {
@@ -412,7 +413,7 @@ export const MarkAsDelivery = (data) => {
         `${BACKEND_URL}${requests.MARK_AS_DELIVERY_SUPPLIER_ORDER}`,
         {
           //TODO: This is in array
-          product_items: [data.product_id],
+          product_items: data.product_id,
         },
         tokenConfig(getState)
       );

@@ -8,10 +8,10 @@ import SideMenu from "../../components/SideMenu";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 
-import { GetSupplierOrder, MarkAsDelivery,MarkAsShipped } from "../../redux/actions/products";
+import { GetSupplierOrder,MarkAsShipped } from "../../redux/actions/products";
 import { URL, CREDENTIALS } from "../../requests";
 
-const Orders = ({ GetSupplierOrder, MarkAsDelivery,MarkAsShipped, orders, user }) => {
+const Orders = ({ GetSupplierOrder,MarkAsShipped, orders, user }) => {
   const [veziComanda, setVeziComanda] = useState();
   const [currentSelectProduct, setCurrentSelectProduct] = useState([]);
 
@@ -25,14 +25,7 @@ const Orders = ({ GetSupplierOrder, MarkAsDelivery,MarkAsShipped, orders, user }
     // MarkAsShipped()
   }, []);
 
-  const acceptOrder = async (e, order_id) => {
-    e.preventDefault();
-    await MarkAsDelivery({ product_id: order_id });
-    GetSupplierOrder();
-    toastr.success("Order Delivered", "Order Mark As Delivery successfully");
-    window.location.href = "/orders";
-  };
-
+ 
   const handleCheck = (e, product_item_id) => {
     const checked = e.target.checked;
     if (checked) {
@@ -166,6 +159,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
   GetSupplierOrder,
-  MarkAsDelivery,
   MarkAsShipped
 })(Orders);
