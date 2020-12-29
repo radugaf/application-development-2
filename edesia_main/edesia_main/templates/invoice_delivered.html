@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
-  <title>Example 1</title>
+  <title>Delivered Invoice</title>
   <style>
     .clearfix:after {
       content: "";
@@ -145,23 +145,23 @@
   </style>
 </head>
 
-<body>
+<body style="font-size: 10px; width: 100%; padding-right: 20px;">
   <header class="clearfix">
     <div id="logo">
       <img src="../static/images/logo-temp.png">
     </div>
-    <h1>Delivery Document</h1>
+    <h1>Delivery Document <strong>#{{invoice_no}}</strong></h1>
     <div id="company" class="clearfix">
-      <div>Supplier Title</div>
-      <div>Address</div>
-      <div>(602) 519-0450</div>
-      <div><a href="mailto:company@example.com">company@example.com</a></div>
+      <div>{{company.name|default:"Company Name.."}}</div>
+      <div>{{company.address|default:"Company Address.."}}</div>
+      <div>{{company.phone_number}}</div>
+      <!-- <div><a href="mailto:company@example.com">company@example.com</a></div> -->
     </div>
     <div id="project">
-      <div><span>CLIENT</span> Restaurant Name</div>
-      <div><span>ADDRESS</span> 796 Silver Harbour, TX 79273, US</div>
-      <div><span>PHONE</span> <a href="mailto:john@example.com">john@example.com</a></div>
-      <div><span>DATE</span>Document Creation Date </div>
+      <div><span>CLIENT</span>{{restaurant.name|default:"Restaurant Name.."}}</div>
+      <div><span>ADDRESS</span>{{restaurant.address|default:"Restaurant Address.."}}</div>
+      <div><span>PHONE</span>{{restaurant.phone_number}}</div>
+      <div><span>DATE</span>{{invoice_creation_date}}</div>
     </div>
   </header>
   <main>
@@ -178,27 +178,27 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="service">Design</td>
-          <td class="desc">Creating a recognizable design solution based on the company's existing visual identity</td>
-          <td class="unit">True</td>
-          <td class="unit">False</td>
-          <td class="unit">$40.00</td>
-          <td class="qty">26</td>
-          <td class="total">$1,040.00</td>
-        </tr>
-        <tr>
-          <td colspan="7" class="total">$1,300.00</td>
-        </tr>
+        {% for order_item in order_items %}
+          <tr>
+            <td class="service">{{order_item.product.title}}</td>
+            <td class="desc">{{order_item.product.description}}</td>
+            <td class="unit">{{order_item.is_shipped}}</td>
+            <td class="unit">{{order_item.is_delivered}}</td>
+            <td class="unit">${{order_item.final_price}}</td>
+            <td class="qty">{{order_item.quantity}}</td>
+            <td class="total">${{order_item.get_total}}</td>
+          </tr>        
+        {% endfor %}
+
         <tr>
           <td colspan="6" class="grand total">GRAND TOTAL</td>
-          <td class="grand total">$6,500.00</td>
+          <td class="grand total">${{total_sum}}</td>
         </tr>
       </tbody>
     </table>
     <div id="notices">
       <div>NOTICE:</div>
-      <div class="notice">Lorem Ipsum example text here. Maybe add somethin here ? Like a notification or something
+      <div class="notice">Lorem Ipsum example text here. Maybe add something here ? Like a notification or something
       </div>
     </div>
   </main>
