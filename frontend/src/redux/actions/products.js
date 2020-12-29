@@ -4,8 +4,38 @@ import requests, { BACKEND_URL, TOKEN } from "../../requests";
 import { useHistory } from "react-router-dom";
 
 /** Product Start */
-// Product Fetch
+// Product Fetch Restaurant
 export const ProductFetch = () => {
+  return async (dispatch, getState) => {
+    // Loading
+    dispatch({
+      type: "PRODUCT_LOADING",
+      payload: true,
+    });
+    //   Get Token from state
+
+    try {
+      const productData = await axios.get(
+        `${BACKEND_URL}${requests.RESTAURANT_PRODUCT_LIST}`,
+        tokenConfig(getState)
+      );
+      console.log({ productData });
+      await checkUserType(dispatch, getState);
+
+      dispatch({
+        type: "STOP_LOADING",
+      });
+      dispatch({ type: "GET_PRODUCTS", payload: productData.data.data });
+    } catch (error) {
+      console.log({ error });
+
+      errorHandle(error, dispatch);
+    }
+  };
+};
+
+// Supplier
+export const SupplierProductFetch = () => {
   return async (dispatch, getState) => {
     // Loading
     dispatch({
@@ -250,7 +280,6 @@ export const UpdateInquiry = (data) => {
         },
         tokenConfig(getState)
       );
-      GetInquires();
       console.log({ updateInquiry });
       await checkUserType(dispatch, getState);
 
@@ -459,7 +488,23 @@ export const SetToken = (data) => {
       console.log({ token });
       localStorage.setItem("token", token.data.access);
 
-      await checkUserType(dispatch, getState);
+      let userType = await axios.get(
+        `${BACKEND_URL}${requests.GET_CHECK_USER_TYPE}`,
+        tokenConfig(getState)
+      );
+      userType = userType.data.data;
+      if (
+        userType &&
+        (userType.is_company_owner || userType.is_company_staff)
+      ) {
+        SupplierProductFetch();
+      }
+      if (
+        userType &&
+        (userType.is_restaurant_staff || userType.is_restaurant_owner)
+      ) {
+        ProductFetch();
+      }
       dispatch({
         type: "STOP_LOADING",
       });
@@ -501,7 +546,7 @@ export const Logout = () => {
 /** Common Actions */
 // Error Handle
 export const errorHandle = (error, dispatch) => {
-  console.log({error:error.response.data})
+  console.log({ error: error.response.data });
   if (
     error &&
     error.response &&
@@ -511,11 +556,11 @@ export const errorHandle = (error, dispatch) => {
   ) {
     localStorage.removeItem("token");
     toastr.error(
-      
-      (error.response.data &&
-        ((error.response.data.messages && error.response.data.messages[0] &&
-        error.response.data.messages[0].message) ||
-        error.response.data.detail) ) 
+      error.response.data &&
+        ((error.response.data.messages &&
+          error.response.data.messages[0] &&
+          error.response.data.messages[0].message) ||
+          error.response.data.detail)
     );
     dispatch({
       type: "AUTH_ERROR",
@@ -526,7 +571,7 @@ export const errorHandle = (error, dispatch) => {
     error &&
     error.response &&
     error.response.data &&
-    ( error.response.data.message || error.response.data.detail)
+    (error.response.data.message || error.response.data.detail)
   )
     toastr.error(
       (error.response.data.message &&
@@ -545,7 +590,7 @@ export const errorHandle = (error, dispatch) => {
 };
 
 // Handle Token
-export const tokenConfig = (getState) => {
+export const tokenConfig = () => {
   // const token = TOKEN;
   // const token = getState().products.token || TOKEN;
   const token = localStorage.getItem("token");

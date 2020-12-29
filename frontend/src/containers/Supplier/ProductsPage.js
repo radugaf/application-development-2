@@ -12,9 +12,11 @@ import {
   ProductFetch,
   AddToCart,
   SetToken,
+  SupplierProductFetch,
+  tokenConfig,
 } from "../../redux/actions/products";
 import TableProducts from "../../components/TableProducts.js";
-import { URL, CREDENTIALS } from "../../requests";
+import requests, { URL, CREDENTIALS, BACKEND_URL, TOKEN } from "../../requests";
 
 const ProductsPage = ({
   ProductFetch,
@@ -22,7 +24,11 @@ const ProductsPage = ({
   SetToken,
   products,
   authErrors,
+  user,
+  SupplierProductFetch,
 }) => {
+  console.log({ user });
+  // const userType = user;
   // FILTERS -------------------------------------------------------------------------------------------------------------
 
   const [filterOne, setFilterOne] = useState(false);
@@ -41,9 +47,26 @@ const ProductsPage = ({
   });
   console.log({ formData });
   const { product_id } = formData;
-
+  const call = async () => {
+    let userType = await axios.get(
+      `${BACKEND_URL}${requests.GET_CHECK_USER_TYPE}`,
+      tokenConfig()
+    );
+    userType = (userType && userType.data && userType.data.data) || {
+      is_restaurant_owner: true,
+    };
+    if (userType && (userType.is_company_owner || userType.is_company_staff)) {
+      SupplierProductFetch();
+    }
+    if (
+      userType &&
+      (userType.is_restaurant_staff || userType.is_restaurant_owner)
+    ) {
+      ProductFetch();
+    }
+  };
   useEffect(() => {
-    ProductFetch();
+    call();
   }, []);
 
   const onChange = (e) =>
@@ -53,28 +76,6 @@ const ProductsPage = ({
     e.preventDefault();
     AddToCart({ product_id: product_id });
     toastr.success(`Add To ${type}`, `Add To ${type} successfully added `);
-
-    // const config = {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjExOTA5MzE5LCJqdGkiOiJiZDg2MDVmMDQ5ZTg0OTFkODY2NzM4ZTUyM2VkZWU4MCIsInVzZXJfaWQiOjF9.V-oLJKAsRYCbon1fm_zUpWYalEFI9QrNykaMNiK_T6E`,
-    //   },
-    // };
-
-    // axios
-    //   .post(
-    //     "http://localhost:8000/api/v1/add-product-in-cart/",
-    //     {
-    //       product_id,
-    //     },
-    //     config
-    //   )
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   };
 
   console.log({ products });
@@ -82,9 +83,8 @@ const ProductsPage = ({
     <>
       <NavBar />
 
-<div className="content-wrapper">
-
-<SideMenu />
+      <div className="content-wrapper">
+        <SideMenu />
 
         <div className="products-wrapper">
           <div className="products-name-view card-row flex-row vertical-center padding-15">
@@ -277,7 +277,7 @@ const ProductsPage = ({
                     <th>Disponibilitate</th>
                     <th>Stoc maxim</th>
                     <th>Pret</th>
-                    <th className='td-vertical-center'>Actiune</th>
+                    <th className="td-vertical-center">Actiune</th>
                   </tr>
                   {products &&
                     products.map((product) => (
@@ -317,7 +317,7 @@ const ProductsPage = ({
                           </span>
                         </td>
                         <td>{product.price}</td>
-                        <td className='width80'>
+                        <td className="width80">
                           <div
                             className={
                               product.instant_delivery
@@ -357,10 +357,12 @@ const mapStateToProps = (state) => {
   return {
     products: state.products.productsDetails,
     authErrors: state.products.error,
+    user: state.products.user,
   };
 };
 export default connect(mapStateToProps, {
   ProductFetch,
   AddToCart,
   SetToken,
+  SupplierProductFetch,
 })(ProductsPage);

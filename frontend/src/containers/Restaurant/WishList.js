@@ -23,6 +23,8 @@ const WishList = ({
   SetToken,
   AddInquiry,
 }) => {
+  const [currentSelectProduct, setCurrentSelectProduct] = useState([]);
+
   useEffect(() => {
     GetAddToCart();
   }, []);
@@ -53,19 +55,32 @@ const WishList = ({
     }
   };
 
-  const onFormSubmit = (e, product_items_id) => {
+  const onFormSubmit = (e) => {
     e.preventDefault();
-    AddInquiry({ product_id: [product_items_id] });
+    AddInquiry({ product_id: currentSelectProduct });
     toastr.success("Add Product in Inquiries", "Product added successfully");
+    GetAddToCart();
   };
 
+  const handleCheck = (e, product_item_id) => {
+    const checked = e.target.checked;
+    if (checked) {
+      setCurrentSelectProduct((product) => [...product, product_item_id]);
+    } else {
+      const newSelectProduct =
+        currentSelectProduct &&
+        currentSelectProduct.filter((product) => +product !== +product_item_id);
+      setCurrentSelectProduct(newSelectProduct);
+    }
+  };
+
+  console.log({ currentSelectProduct });
   return (
     <>
       <NavBar />
 
-<div className="content-wrapper">
-
-<SideMenu />
+      <div className="content-wrapper">
+        <SideMenu />
 
         <div className="wishlist-content-wrapper-column">
           <div className="card-row padding-15 page-name-wrapper">
@@ -76,20 +91,25 @@ const WishList = ({
 
           <table className="product-page-table margin-top-25">
             <tr>
-              <th className='td-vertical-center'>Select</th>
+              <th className="td-vertical-center">Select</th>
               <th>Poza</th>
               <th>Nume</th>
               <th>Status</th>
               <th>Pret</th>
-              <th className='td-vertical-center'>Cantitate</th>
-              <th className='td-vertical-center'>Sterge</th>
+              <th>Qty</th>
+
+              <th className="td-vertical-center">Cantitate</th>
+              <th className="td-vertical-center">Sterge</th>
             </tr>
             {carts &&
               carts.not_instant_delivery_items &&
               carts.not_instant_delivery_items.map((cart) => (
                 <tr>
-                  <td className='td-vertical-center'>
-                    <input type='checkbox'></input>
+                  <td className="td-vertical-center">
+                    <input
+                      type="checkbox"
+                      onChange={(e) => handleCheck(e, cart.product_item_id)}
+                    ></input>
                   </td>
 
                   <td className="product-page-table-picture-data">
@@ -99,9 +119,11 @@ const WishList = ({
                     {cart.product_title}
                   </td>
                   <td>
-                  <span>{cart.is_editable ? "Deschisa" : "Inchisa"}</span>
+                    <span>{cart.is_editable ? "Deschisa" : "Inchisa"}</span>
                   </td>
                   <td>{cart.product_original_price} Ron</td>
+                  <td>{cart.quantity_by_restaurant} </td>
+
                   <td className="td-vertical-center">
                     <input
                       disabled={!cart.is_editable}
@@ -120,13 +142,14 @@ const WishList = ({
                     ></i>
                   </td>
                 </tr>
-
               ))}
-              <tr>
-                <td colspan='7'>
-                  <div className='buton-cere-oferta'>Cere Oferta</div>
-                </td>
-              </tr>
+            <tr>
+              <td colspan="7">
+                <div className="buton-cere-oferta" onClick={onFormSubmit}>
+                  Cere Oferta
+                </div>
+              </td>
+            </tr>
           </table>
         </div>
       </div>

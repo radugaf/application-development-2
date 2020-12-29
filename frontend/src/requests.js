@@ -6,7 +6,8 @@ export default {
   GET_TOKEN: "token/",
   GET_CHECK_USER_TYPE: "check-user-type/",
   //   Product
-  SUPPLIER_PRODUCT_LIST: "product-list/",
+  SUPPLIER_PRODUCT_LIST: "supplier-product-list/",
+  RESTAURANT_PRODUCT_LIST: "restaurant-product-list/",
   SUPPLIER_ADD_PRODUCT_IN_CART: "add-product-in-cart/",
   //   Cart
   GET_RESTAURANT_ADD_CART: "product-list-in-cart/",
