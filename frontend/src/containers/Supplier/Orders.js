@@ -8,10 +8,10 @@ import SideMenu from "../../components/SideMenu";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 
-import { GetSupplierOrder,MarkAsShipped } from "../../redux/actions/products";
+import { GetSupplierOrder, MarkAsShipped } from "../../redux/actions/products";
 import { URL, CREDENTIALS } from "../../requests";
 
-const Orders = ({ GetSupplierOrder,MarkAsShipped, orders, user }) => {
+const Orders = ({ GetSupplierOrder, MarkAsShipped, orders, user }) => {
   const [veziComanda, setVeziComanda] = useState();
   const [currentSelectProduct, setCurrentSelectProduct] = useState([]);
 
@@ -25,7 +25,6 @@ const Orders = ({ GetSupplierOrder,MarkAsShipped, orders, user }) => {
     // MarkAsShipped()
   }, []);
 
- 
   const handleCheck = (e, product_item_id) => {
     const checked = e.target.checked;
     if (checked) {
@@ -43,6 +42,7 @@ const Orders = ({ GetSupplierOrder,MarkAsShipped, orders, user }) => {
     MarkAsShipped({ product_id: currentSelectProduct });
     toastr.success("Mark Order as Shipped", "Order Accepted");
     GetSupplierOrder();
+    window.location.href = "/orders";
   };
 
   return (
@@ -132,7 +132,10 @@ const Orders = ({ GetSupplierOrder,MarkAsShipped, orders, user }) => {
                         </td>
                         <td colspan="3" className="td-vertical-left">
                           <div className="orders-buttons">
-                            <div className="orders-accept-button" onClick={onFormSubmit}>
+                            <div
+                              className="orders-accept-button"
+                              onClick={onFormSubmit}
+                            >
                               Mark as shipped
                             </div>
                           </div>
@@ -159,5 +162,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
   GetSupplierOrder,
-  MarkAsShipped
+  MarkAsShipped,
 })(Orders);
