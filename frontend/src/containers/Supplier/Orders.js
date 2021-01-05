@@ -45,6 +45,19 @@ const Orders = ({ GetSupplierOrder, MarkAsShipped, orders, user }) => {
     window.location.href = "/orders";
   };
 
+  const handleAllCheck = (e,orders) => {
+    e.preventDefault();
+const product_ids=[]
+    const notinstanceDeliver =
+orders && orders.map((order)=>product_ids.push(order.product_item_id))     
+    console.log({ product_ids });
+  MarkAsShipped({ product_id: product_ids });
+    toastr.success("Mark Order as Shipped", "Order Accepted");
+    GetSupplierOrder();
+    window.location.href = "/orders";
+
+  };
+ 
   return (
     <>
       <NavBar />
@@ -128,6 +141,16 @@ const Orders = ({ GetSupplierOrder, MarkAsShipped, orders, user }) => {
                           <div className="orders-summary">
                             {/* TODO */}
                             <span>Valoare Totala Comanda : Ron</span>
+                          </div>
+                        </td>
+                         <td colspan="2" className="td-vertical-left">
+                          <div className="orders-buttons">
+                            <div
+                              className="orders-accept-button"
+                              onClick={(e)=>handleAllCheck(e,orders[veziComanda])}
+                            >
+                              Select All and send
+                            </div>
                           </div>
                         </td>
                         <td colspan="3" className="td-vertical-left">

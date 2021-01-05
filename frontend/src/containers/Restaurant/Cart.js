@@ -33,7 +33,6 @@ const Cart = ({
 
   useEffect(() => {
     GetAddToCart();
-   
   }, []);
 
   const onDeleteCart = async (e, product_item_id) => {
@@ -70,7 +69,6 @@ const Cart = ({
     toastr.success("Create Order", "Order Created successfully");
   };
 
-
   const rejectOrder = (e) => {
     e.preventDefault();
   };
@@ -92,7 +90,26 @@ const Cart = ({
       setSum((sum) => +sum - +price);
     }
   };
+  const handleAllCheck = (e) => {
+    e.preventDefault();
+const product_ids=[]
+    const instanceDelivery =
+      carts &&
+      carts.instant_delivery_items &&
+      carts.instant_delivery_items.map((cart) => product_ids.push(cart.product_item_id));
 
+    const notinstanceDeliver =
+      carts &&
+      carts.not_instant_delivery_items &&
+      carts.not_instant_delivery_items.map((cart) => 
+       cart.is_enquiry_solved && cart.custom_status === "COMPLETED" && product_ids.push(cart.product_item_id));
+     
+    console.log({ product_ids });
+    PlaceOrder({ product_id: product_ids });
+    GetAddToCart();
+    toastr.success("Create Order", "Order Created successfully");
+    window.location.href="/cart"
+  };
   const displayProduct = (cart) => {
     return (
       <>
@@ -189,6 +206,13 @@ const Cart = ({
                     }
                   })}
               </div>
+              <button
+                className="cart-page-delivery-add-to-cart"
+                onClick={(e) => handleAllCheck(e)}
+              >
+                Select All and Send
+               
+              </button>
             </div>
 
             <div className="cart-product-checkout">

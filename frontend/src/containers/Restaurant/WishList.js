@@ -74,6 +74,23 @@ const WishList = ({
     }
   };
 
+  const handleAllCheck = (e) => {
+    e.preventDefault();
+const product_ids=[]
+    const notinstanceDeliver =
+      carts &&
+      carts.not_instant_delivery_items &&
+      carts.not_instant_delivery_items.map((cart) => 
+        cart.custom_status === "PENDING" && product_ids.push(cart.product_item_id));
+     
+    console.log({ product_ids });
+    AddInquiry({ product_id: product_ids });
+   toastr.success("Add Product in Inquiries", "Product added successfully");
+    GetAddToCart();
+    window.location.href="/wishlist"
+
+  };
+
   console.log({ currentSelectProduct });
   return (
     <>
@@ -104,7 +121,7 @@ const WishList = ({
             {carts &&
               carts.not_instant_delivery_items &&
               carts.not_instant_delivery_items.map((cart) => (
-cart.custom_status &&  cart.custom_status !=='COMPLETED' && 
+cart.custom_status &&  cart.custom_status ==='PENDING' && 
                 <tr>
                   <td className="td-vertical-center">
                     <input
@@ -148,6 +165,12 @@ cart.custom_status &&  cart.custom_status !=='COMPLETED' &&
               <td colspan="7">
                 <div className="buton-cere-oferta" onClick={onFormSubmit}>
                   Cere Oferta
+                </div>
+              </td>
+
+              <td colspan="8">
+                <div className="buton-cere-oferta" onClick={handleAllCheck}>
+                  Select All and Send
                 </div>
               </td>
             </tr>
