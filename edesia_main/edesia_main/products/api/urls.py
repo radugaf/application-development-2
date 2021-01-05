@@ -50,6 +50,7 @@ urlpatterns = [
     path('mark-orders-as-shipped/', MarkOrdersAsShippedAPIView.as_view(), name='mark-orders-as-shipped'),
     path('mark-orders-as-delivered/', MarkOrdersAsDeliveredAPIView.as_view(), name='mark-orders-as-delivered'),
     path('invoice-list/', InvoiceListAPIView.as_view(), name='invoice-list'),
+    path('order-history/', OrderHistoryAPIView.as_view(), name='order-history'),
 
     path('address/', AddressCreateReadAPIView.as_view(), name='address'),
     path('address-list/', AddressListUpdateAPIView.as_view(), name='address-list'),

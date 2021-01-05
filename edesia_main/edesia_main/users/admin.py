@@ -21,7 +21,7 @@
 #     list_display = ["username", "name", "is_superuser", 'is_staff', 'restaurant_staff', 'is_active']
 #     search_fields = ["name", 'email']
 
-
+ 
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth import admin as auth_admin, get_user_model
@@ -36,7 +36,7 @@ class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Contact info', {'fields': ('email',)}),
-        ('User Type', {'fields': ('is_restaurant_owner', 'is_restaurant_staff', 'is_company_owner', 'is_company_staff')}),
+        ('User Type', {'fields': ('is_restaurant_owner', 'is_restaurant_staff', 'is_supplier', )}),
         ('Profile', {'fields': ('first_name', 'last_name')}),
         # ('Status', {'fields': ('email_confirmed',)}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
