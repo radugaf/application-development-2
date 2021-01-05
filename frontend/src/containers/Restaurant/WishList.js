@@ -104,6 +104,7 @@ const WishList = ({
             {carts &&
               carts.not_instant_delivery_items &&
               carts.not_instant_delivery_items.map((cart) => (
+cart.custom_status &&  cart.custom_status !=='COMPLETED' && 
                 <tr>
                   <td className="td-vertical-center">
                     <input
