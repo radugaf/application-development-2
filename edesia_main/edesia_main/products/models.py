@@ -229,6 +229,15 @@ class Enquiry(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
+
+class RestaurantOrderItemHistory(models.Model):
+    items = models.ManyToManyField(OrderItem)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+
+
 class Invoice(models.Model):
 
     invoice_no = models.CharField(max_length=255, default='N/A')
