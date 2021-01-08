@@ -10,6 +10,7 @@ from django.conf.urls import url
 from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
         "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"

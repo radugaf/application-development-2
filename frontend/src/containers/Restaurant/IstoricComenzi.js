@@ -21,6 +21,8 @@ const IstoricComenzi = ({GetRestaurantOrder,MarkAsDelivery,orders,user}) => {
   const [currentSelectProduct, setCurrentSelectProduct] = useState([]);
 
   const [supplierOne, setSupplierOne] = useState(false);
+  const [supplierOneIndex, setSupplierOneIndex] = useState(false);
+
   const [supplierTwo, setSupplierTwo] = useState(false);
 
   const [dateOne, setDateOne] = useState(false);
@@ -50,7 +52,7 @@ const IstoricComenzi = ({GetRestaurantOrder,MarkAsDelivery,orders,user}) => {
     toastr.success("Order Mark Ad Delivered", "Order Mark As Delivery successfully");
     window.location.href = "/istoric-comenzi";
   };
-
+  console.log({supplierOne})
   return (
     <>
       <NavBar />
@@ -68,9 +70,12 @@ const IstoricComenzi = ({GetRestaurantOrder,MarkAsDelivery,orders,user}) => {
 
         <ul className='card-row order-history-wrapper'>
   {Object.keys(orders) &&
-              Object.keys(orders).map((key) => (
-          <li className='order-history-supplier'><span className='color-blue'><i class="fas fa-cash-register color-blue margin-right-10"></i>{key}<i onClick={() => setSupplierOne(key)} class="istoric-comenzi-supplier-dropdown color-blue fas fa-chevron-down"></i></span>
-          {supplierOne && orders &&
+              Object.keys(orders).map((key,index) => (
+          <li className='order-history-supplier'><span className='color-blue'><i class="fas fa-cash-register color-blue margin-right-10"></i>{key}<i onClick={() => {
+            setSupplierOne(key)
+            setSupplierOneIndex(index)
+          }} class="istoric-comenzi-supplier-dropdown color-blue fas fa-chevron-down"></i></span>
+          {supplierOne && supplierOneIndex===index && orders &&
                         orders[supplierOne] &&
                         Object.keys(orders[supplierOne]) &&
               Object.keys(orders[supplierOne]).map((key) => (

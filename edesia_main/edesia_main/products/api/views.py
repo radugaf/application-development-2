@@ -5,8 +5,8 @@ import os
 
 from io import BytesIO
 
-# from weasyprint.fonts import FontConfiguration
-# from weasyprint import HTML
+from weasyprint.fonts import FontConfiguration
+from weasyprint import HTML
 from django.template.loader import render_to_string
 from django.core.files.storage import FileSystemStorage
 
@@ -29,16 +29,15 @@ from .serializers import *
 
 User = get_user_model()
 
-
 class RestaurantCreateReadAPIView(APIView):
     serializer_class = RestaurantSerializer
 
     def get(self, request, id):
         try:
             restaurant_id = id
-
+            
             restaurant = Restaurant.objects.get(id=restaurant_id)
-
+            
             data = {
                 'name': restaurant.name,
                 'address': restaurant.address,
@@ -48,19 +47,19 @@ class RestaurantCreateReadAPIView(APIView):
             for user in restaurant.staff.all():
                 data['staff'].append({
                     'id': user.id,
-                    'username': user.username
+                    'username': user.username 
                 })
-
+            
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
     def post(self, request):
         try:
             name = request.POST.get('name', None)
             address = request.POST.get('address', None)
             phone_number = request.POST.get('phone_number', None)
-
+            
             if not name:
                 raise exceptions.NotFound('name is not given')
             if not address:
@@ -83,23 +82,21 @@ class RestaurantCreateReadAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class RestaurantDeleteAPIView(APIView):
     def post(self, request, id):
         try:
-
+            
             restaurant_id = id
             restaurant = Restaurant.objects.get(id=restaurant_id)
 
             if restaurant.owner != request.user and not request.user.is_superuser:
                 raise exceptions.PermissionDenied('You don\'t have permission')
-
+            
             restaurant.delete()
 
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class RestaurantListUpdateAPIView(APIView):
     serializer_class = RestaurantSerializer
@@ -114,19 +111,18 @@ class RestaurantListUpdateAPIView(APIView):
             name = request.POST.get('name', None)
             address = request.POST.get('address', None)
             phone_number = request.POST.get('phone_number', None)
-
+            
             restaurant = Restaurant.objects.get(id=restaurant_id)
-
+            
             restaurant.owner = request.user
             restaurant.name = restaurant.name if not name else name
             restaurant.address = restaurant.address if not address else address
             restaurant.phone_number = restaurant.phone_number if not phone_number else phone_number
             restaurant.save()
-
+            
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class CompanyCreateReadAPIView(APIView):
     serializer_class = CompanySerializer
@@ -135,7 +131,7 @@ class CompanyCreateReadAPIView(APIView):
         try:
             company_id = id
             company = Company.objects.get(id=company_id)
-
+            
             data = {
                 'id': company.id,
                 'name': company.name,
@@ -146,19 +142,19 @@ class CompanyCreateReadAPIView(APIView):
             for user in company.staff.all():
                 data['staff'].append({
                     'id': user.id,
-                    'username': user.username
+                    'username': user.username 
                 })
-
+            
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
     def post(self, request):
         try:
             name = request.POST.get('name', None)
             address = request.POST.get('address', None)
             phone_number = request.POST.get('phone_number', None)
-
+            
             if not name:
                 raise exceptions.NotFound('name is not given')
             if not address:
@@ -181,22 +177,20 @@ class CompanyCreateReadAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class CompanyDeleteAPIView(APIView):
     def post(self, request, id):
         try:
-
+            
             company_id = id
             company = Company.objects.get(id=company_id)
             if company.owner != request.user and not request.user.is_superuser:
                 raise exceptions.PermissionDenied('You don\'t have permission')
-
+            
             company.delete()
 
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class CompanyListUpdateAPIView(APIView):
     serializer_class = CompanySerializer
@@ -211,19 +205,18 @@ class CompanyListUpdateAPIView(APIView):
             name = request.POST.get('name', None)
             address = request.POST.get('address', None)
             phone_number = request.POST.get('phone_number', None)
-
+            
             company = Company.objects.get(id=company_id)
-
+            
             company.owner = request.user
             company.name = company.name if not name else name
             company.address = company.address if not address else address
             company.phone_number = company.phone_number if not phone_number else phone_number
             company.save()
-
+            
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class UserDetailReadUpdateAPIView(APIView):
     serializer_class = UserDetailSerializer
@@ -240,14 +233,14 @@ class UserDetailReadUpdateAPIView(APIView):
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
     def post(self, request):
         try:
 
             nationality = request.POST.get('nationality', None)
             phonenumber = request.POST.get('phonenumber', None)
             address = request.POST.get('address', None)
-
+            
             if not nationality:
                 raise exceptions.NotFound('nationality is not given')
             if not phonenumber:
@@ -262,10 +255,9 @@ class UserDetailReadUpdateAPIView(APIView):
             user_detail.save()
 
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
-
+            
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class ProductDeleteAPIView(APIView):
     def post(self, request, id):
@@ -276,13 +268,12 @@ class ProductDeleteAPIView(APIView):
             pass
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
-
 class ProductCreateReadAPIView(APIView):
     serializer_class = ProductSerializer
 
     def get(self, request, id):
         product_id = id
-
+        
         try:
             obj = Product.objects.get(id=product_id)
 
@@ -291,7 +282,7 @@ class ProductCreateReadAPIView(APIView):
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
     def post(self, request):
         try:
             if not request.user.get_company():
@@ -342,14 +333,12 @@ class ProductCreateReadAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class RestaurantProductListAPIView(APIView):
     serializer_class = ProductSerializer
 
     def get(self, request):
         serializer = self.serializer_class(Product.objects.all(), many=True)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
-
 
 class SupplierProductListUpdateAPIView(APIView):
     serializer_class = ProductSerializer
@@ -375,10 +364,10 @@ class SupplierProductListUpdateAPIView(APIView):
             image_main = request.FILES.get('image_main', None)
             price = request.POST.get('price', None)
             instant_delivery = str(request.POST.get('instant_delivery', 'false'))
-
+            
             if not product_id:
                 raise exceptions.NotFound('product_id is not given')
-
+            
             product = Product.objects.get(id=product_id)
 
             if title:
@@ -405,14 +394,13 @@ class SupplierProductListUpdateAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class AddProductInCartAPIView(APIView):
     def post(self, request):
         try:
             product_id = request.data.get('product_id')
             user = request.user
             cart = user.cart
-            product = Product.objects.get(id=product_id)
+            product=Product.objects.get(id=product_id)
 
             if not user.get_restaurant():
                 raise exceptions.NotFound('The user is not associated to any Restaurant')
@@ -426,14 +414,13 @@ class AddProductInCartAPIView(APIView):
             order_item.final_price = product.price
 
             order_item.save()
-
+            
             cart.products.add(order_item)
-
+            
             return Response({'status': 'success', 'message': 'Product has been added in cart'}, status=status.HTTP_200_OK)
-
+        
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class ProductItemDetailsAPIView(APIView):
     def get(self, request, **kwargs):
@@ -450,7 +437,6 @@ class ProductItemDetailsAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class UpdateProductInCartAPIView(APIView):
     def post(self, request):
         try:
@@ -466,19 +452,18 @@ class UpdateProductInCartAPIView(APIView):
 
             if not order_item.is_editable:
                 return Response({'status': 'error', 'message': 'This order item cannot be edited'}, status=status.HTTP_200_OK)
-
+            
             order_item.custom_status = 'CUSTOM_UPDATED'
             order_item.quantity = quantity
             order_item.price_by_restaurant = price
             order_item.quantity_by_restaurant = quantity
-
+            
             order_item.save()
-
+            
             return Response({'status': 'success', 'message': 'Product has been updated in cart'}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class RemoveProductFromCartAPIView(APIView):
     def post(self, request):
@@ -492,7 +477,6 @@ class RemoveProductFromCartAPIView(APIView):
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class ProductListInCartAPIView(APIView):
     serializer_class = CartSerializer
@@ -523,7 +507,6 @@ class ProductListInCartAPIView(APIView):
                     'custom_status': item.custom_status,
                     'is_declined': item.is_declined,
                     'final_price': item.final_price,
-                    'supplier': item.product.supplier_company.name
                 })
             for item in not_instant_delivery_items:
                 data['not_instant_delivery_items'].append({
@@ -543,17 +526,15 @@ class ProductListInCartAPIView(APIView):
                     'custom_status': item.custom_status,
                     'is_declined': item.is_declined,
                     'final_price': item.final_price,
-                    'supplier': item.product.supplier_company.name
                 })
-
+                
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class AddItemsInEnquiry(APIView):
-
+    
     def post(self, request):
         try:
             product_item_list = request.data.get('product_items', [])
@@ -568,7 +549,7 @@ class AddItemsInEnquiry(APIView):
 
             order_items = OrderItem.objects.filter(id__in=product_item_list)
             order_items.update(is_editable=False, custom_status='PENDING')
-
+            
             enquiry = restaurant.enquiry
             enquiry.items.add(*order_items)
             enquiry.save()
@@ -577,8 +558,7 @@ class AddItemsInEnquiry(APIView):
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+        
 class EnquiryListAPIView(APIView):
     def get(self, request):
         try:
@@ -586,8 +566,8 @@ class EnquiryListAPIView(APIView):
             company = request.user.get_company()
             print(company)
             if not company:
-
                 raise exceptions.NotFound('User not associated to any Supplier Company')
+            
             enquiries = Enquiry.objects.filter(items__product__supplier_company=company)
 
             data = {}
@@ -598,9 +578,6 @@ class EnquiryListAPIView(APIView):
                         data[enquiry.restaurant.name].append({
                             'enquiry_id': enquiry.id,
                             'product_item_id': item.id,
-                            'product_title': item.product.title,
-                            'product_image': item.product.image_main.url,
-                            'product_description': item.product.description,
                             'original_price': float(item.product.price),
                             'price_by_restaurant': float(item.price_by_restaurant),
                             'quantity_by_restaurant': item.quantity_by_restaurant,
@@ -609,24 +586,22 @@ class EnquiryListAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class SupplierAwaitingProductListAPIView(APIView):
     def get(self, request):
         try:
             company = request.user.get_company()
             if not company:
                 raise exceptions.NotFound('User not associated to any Supplier Company')
-
-            data = {}
-            orderitem_list = OrderItem.objects.filter(
-                is_custom=True, custom_status='COMPLETED', ordered=False, product__supplier_company=company)
+            
+            data = {} 
+            orderitem_list = OrderItem.objects.filter(is_custom=True, custom_status='COMPLETED', ordered=False, product__supplier_company=company)
 
             for order_item in orderitem_list:
                 restaurant = order_item.user.get_restaurant()
                 if restaurant:
                     if not data.get(restaurant.name):
                         data[restaurant.name] = []
-
+                    
                     data[restaurant.name].append({
                         'product_item_id': order_item.id,
                         'product_title': order_item.product.title,
@@ -637,7 +612,6 @@ class SupplierAwaitingProductListAPIView(APIView):
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class UpdateAwaitingProductItemAPIView(APIView):
     def post(self, request, id):
@@ -665,12 +639,11 @@ class UpdateAwaitingProductItemAPIView(APIView):
             order_item.quantity = quantity
             order_item.final_price = price
             order_item.save()
-
+            
             return Response({'status': 'success', 'message': 'Product Item has been updated in cart'}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class DeclineEnquiryRequestAPIView(APIView):
     def post(self, request):
@@ -728,35 +701,80 @@ class UpdatePriceQuantityInEnquiryAPIVIew(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class PlaceOrderAPIView(APIView):
     def post(self, request):
         try:
             product_item_list = request.data.get('product_items', [])
             user = request.user
+            restaurant = user.get_restaurant()
 
+            if not restaurant:
+                raise exceptions.NotFound('The user is not associated to any Restaurant')
+            print(restaurant)
             if not product_item_list:
                 return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_200_OK)
 
-            items = OrderItem.objects.filter(id__in=product_item_list, ordered=False)
+            items = OrderItem.objects.filter(id__in=product_item_list)
 
             if not items:
-                return Response({'status': 'error', 'message': 'There is no data of the given product list'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+                return Response({'status': 'error', 'message': 'There is no data of the given product list'}, status=status.HTTP_200_OK)
+            
             items.update(ordered=True)
-            user.cart.products.remove(*items)
+
+            restaurant_order_item_history = RestaurantOrderItemHistory.objects.create(restaurant=restaurant)
+            restaurant_order_item_history.items.add(*items)
+            restaurant_order_item_history.save()
+
+            cart = user.cart
+            cart.products.remove(*items)
+            cart.save()
 
             return Response({'status': 'success', 'message': 'Order has been placed'}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class OrderHistoryAPIView(APIView):
+    def get(self, request):
+        try:
+            user = request.user
+            restaurant = user.get_restaurant()
+
+            if not restaurant:
+                raise exceptions.NotFound('The user is not associated to any Restaurant')
+
+            history_items = restaurant.restaurantorderitemhistory_set.all()
+            data = []
+            
+            for history_item in history_items:
+                obj = {'ordered_date': datetime.datetime.strftime(history_item.created_date, '%m/%d/%Y')}
+                obj['products'] = []
+                for item in history_item.items.all():
+                    obj['products'].append({
+                        'product_item_id': item.id,
+                        'product_title': item.product.title,
+                        'product_image_url': item.product.image_main.url,
+                        'product_quantity': item.quantity,
+                        'product_price': float(item.final_price),
+                        'supplier_company_id': None if not item.product.supplier_company else item.product.supplier_company.id,
+                        'supplier_company_name':  'N/A' if not item.product.supplier_company else item.product.supplier_company.name,
+                        'is_editable': item.is_editable,
+                        'is_shipped': item.is_shipped,
+                        'is_delivered': item.is_delivered,
+                    })
+                data.append(obj)
+            
+            return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class RestaurantOrderedProductListAPIView(APIView):
     def get(self, request):
         try:
             user = request.user
             data = []
+
             for item in user.orderitems.filter(ordered=True):
                 data.append({
                     'product_item_id': item.id,
@@ -768,12 +786,11 @@ class RestaurantOrderedProductListAPIView(APIView):
                     'is_shipped': item.is_shipped,
                     'is_delivered': item.is_delivered,
                 })
-
+            
             return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class RestaurantShippedProductListAPIView(APIView):
     def get(self, request):
@@ -813,7 +830,6 @@ class RestaurantShippedProductListAPIView(APIView):
         except IndexError as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class SupplierPendingProductListAPIView(APIView):
     def get(self, request):
         try:
@@ -851,7 +867,6 @@ class SupplierPendingProductListAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class InvoiceListAPIView(APIView):
     def get(self, request):
         try:
@@ -860,13 +875,13 @@ class InvoiceListAPIView(APIView):
 
             if not company and not restaurant:
                 raise exceptions.NotFound('User not associated to any Supplier Company or any Restaurant')
-
+            
             invoices = Invoice.objects.filter(~Q(pdf_document=''))
             if company:
                 invoices = invoices.filter(supplier_company=company)
             if restaurant:
                 invoices = invoices.filter(restaurant=restaurant)
-
+            
             data = []
             for invoice in invoices:
                 data.append({
@@ -883,7 +898,6 @@ class InvoiceListAPIView(APIView):
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class MarkOrdersAsShippedAPIView(APIView):
 
     def post(self, request):
@@ -891,17 +905,17 @@ class MarkOrdersAsShippedAPIView(APIView):
             company = request.user.get_company()
             if not company:
                 raise exceptions.NotFound('User not associated to any Supplier Company')
-
+            
             product_item_list = request.data.get('product_items', [])
             user = request.user
-
+            
             if not product_item_list:
                 return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_200_OK)
 
             order_items = OrderItem.objects.filter(id__in=product_item_list)
             order_items.update(is_shipped=True)
 
-            # TODO: Make Invoice after shipment.
+            #TODO: Make Invoice after shipment.
             # order_items = OrderItem.objects.all()
 
             total_sum = sum(order_item.get_total() for order_item in order_items)
@@ -918,37 +932,35 @@ class MarkOrdersAsShippedAPIView(APIView):
                 'invoice_no': instance.invoice_no,
                 'invoice_creation_date': datetime.datetime.now().strftime('%d %b %Y - %X')
             }
-# uncomment
-            # pdf = render_to_string('invoice_shipped.html', context)
-            # html = HTML(string=pdf)
-            # html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
+            
+            pdf = render_to_string('invoice_shipped.html', context)
+            html = HTML(string=pdf)
+            html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
 
-            # fs = FileSystemStorage('/tmp')
-            # pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
+            fs = FileSystemStorage('/tmp')
+            pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
 
-            # filename = f'Shipped_{instance.invoice_no}.pdf'
-            # instance.pdf_document.save(filename, File(pdf))
+            filename = f'Shipped_{instance.invoice_no}.pdf'
+            instance.pdf_document.save(filename, File(pdf))
 
             return Response({'status': 'success', 'message': 'Marked product as Shipped'}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 class MarkOrdersAsDeliveredAPIView(APIView):
 
     def post(self, request):
         try:
             product_item_list = request.data.get('product_items', [])
             user = request.user
-
+            
             if not product_item_list:
                 return Response({'status': 'error', 'message': 'No products item is given'}, status=status.HTTP_200_OK)
 
             order_items = OrderItem.objects.filter(id__in=product_item_list)
             order_items.update(is_delivered=True)
 
-            # TODO: Make Invoice after Delivered.
+            #TODO: Make Invoice after Delivered.
             # order_items = OrderItem.objects.all()
 
             total_sum = sum(order_item.get_total() for order_item in order_items)
@@ -965,29 +977,29 @@ class MarkOrdersAsDeliveredAPIView(APIView):
                 'invoice_no': instance.invoice_no,
                 'invoice_creation_date': datetime.datetime.now().strftime('%d %b %Y - %X')
             }
-# uncommet
-            # pdf = render_to_string('invoice_delivered.html', context)
-            # html = HTML(string=pdf)
-            # html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
+            
+            pdf = render_to_string('invoice_delivered.html', context)
+            html = HTML(string=pdf)
+            html.write_pdf(target=f'/tmp/invoicepdf_{instance.invoice_no}.pdf', font_config=FontConfiguration())
 
-            # fs = FileSystemStorage('/tmp')
-            # pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
+            fs = FileSystemStorage('/tmp')
+            pdf = fs.open(f'invoicepdf_{instance.invoice_no}.pdf', 'rb')
 
-            # filename = f'Delivered_{instance.invoice_no}.pdf'
-            # instance.pdf_document.save(filename, File(pdf))
+            filename = f'Delivered_{instance.invoice_no}.pdf'
+            instance.pdf_document.save(filename, File(pdf))
+            
 
             return Response({'status': 'success', 'message': 'Marked product as delivered'}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class AddressCreateReadAPIView(APIView):
     serializer_class = AddressSerializer
 
     def get(self, request):
         address_id = request.GET.get('address_id')
-
+        
         try:
             obj = Address.objects.get(id=address_id)
         except Exception as e:
@@ -995,7 +1007,7 @@ class AddressCreateReadAPIView(APIView):
 
         serializer = self.serializer_class(obj, many=False)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
-
+    
     def post(self, request):
         street_address = request.POST.get('street_address', None)
         apartment_address = request.POST.get('apartment_address', None)
@@ -1003,7 +1015,7 @@ class AddressCreateReadAPIView(APIView):
         zip_code = request.POST.get('zip_code', None)
         address_type = request.POST.get('address_type', None)
         default = request.POST.get('default', None)
-
+        
         if not street_address:
             raise exceptions.NotFound('street_address is not given')
         if not apartment_address:
@@ -1033,7 +1045,6 @@ class AddressCreateReadAPIView(APIView):
         else:
             return Response({'status': 'error'}, status=status.HTTP_404_NOT_FOUND)
 
-
 class AddressDeleteAPIView(APIView):
     def post(self, request):
         address_id = request.POST.get('address_id')
@@ -1042,7 +1053,6 @@ class AddressDeleteAPIView(APIView):
         except:
             pass
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
-
 
 class AddressListUpdateAPIView(APIView):
     serializer_class = AddressSerializer
@@ -1059,7 +1069,7 @@ class AddressListUpdateAPIView(APIView):
         zip_code = request.POST.get('zip_code', None)
         address_type = request.POST.get('address_type', None)
         default = request.POST.get('default', None)
-
+        
         if not address_id:
             raise exceptions.NotFound('address_id is not given')
         if not street_address:
@@ -1091,13 +1101,12 @@ class AddressListUpdateAPIView(APIView):
 
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
-
 class OrderCreateReadAPIView(APIView):
     serializer_class = OrderSerializer
 
     def get(self, request):
         order_id = request.GET.get('order_id')
-
+        
         try:
             obj = Order.objects.get(id=order_id)
         except Exception as e:
@@ -1105,7 +1114,7 @@ class OrderCreateReadAPIView(APIView):
 
         serializer = self.serializer_class(obj, many=False)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
-
+    
     def post(self, request):
         products = request.POST.getlist('products', [])
         ordered_date = request.POST.get('ordered_date', None)
@@ -1116,7 +1125,7 @@ class OrderCreateReadAPIView(APIView):
         received = request.POST.get('received', None)
         refund_requested = request.POST.get('refund_requested', None)
         refund_granted = request.POST.get('refund_granted', None)
-
+        
         if not products:
             raise exceptions.NotFound('products is not given')
         if not ordered_date:
@@ -1138,7 +1147,7 @@ class OrderCreateReadAPIView(APIView):
 
         data = {
             'user': request.user,
-            'ordered_date': datetime.strptime(ordered_date, '%m/%d/%Y'),  # sample date: 12/30/2018
+            'ordered_date': datetime.strptime(ordered_date, '%m/%d/%Y'), # sample date: 12/30/2018
             'ordered': ordered,
             'shipping_address': Address.objects.get(id=shipping_address_id),
             'billing_address': Address.objects.get(id=billing_address_id),
@@ -1150,12 +1159,11 @@ class OrderCreateReadAPIView(APIView):
         created = Order.objects.create(**data)
         if created:
             products = Product.objects.filter(id__in=products)
-            created.products.add(**products)
+            created.products.add(*products)
             created.save()
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
         else:
             return Response({'status': 'error'}, status=status.HTTP_404_NOT_FOUND)
-
 
 class OrderDeleteAPIView(APIView):
     def post(self, request):
@@ -1165,7 +1173,6 @@ class OrderDeleteAPIView(APIView):
         except:
             pass
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
-
 
 class OrderListUpdateAPIView(APIView):
     serializer_class = OrderSerializer
@@ -1185,7 +1192,7 @@ class OrderListUpdateAPIView(APIView):
         received = request.POST.get('received', None)
         refund_requested = request.POST.get('refund_requested', None)
         refund_granted = request.POST.get('refund_granted', None)
-
+        
         if not order_id:
             raise exceptions.NotFound('order_id is not given')
         if not products:
@@ -1206,6 +1213,7 @@ class OrderListUpdateAPIView(APIView):
             raise exceptions.NotFound('refund_requested is not given')
         if not refund_granted:
             raise exceptions.NotFound('refund_granted is not given')
+        
 
         try:
             order = Order.objects.get(id=order_id)
@@ -1214,8 +1222,8 @@ class OrderListUpdateAPIView(APIView):
 
         order.user = request.user
         products = Product.objects.filter(id__in=products)
-        order.products.add(**products)
-        order.ordered_date = datetime.strptime(ordered_date, '%m/%d/%Y'),  # sample date: 12/30/2018
+        order.products.add(*products)
+        order.ordered_date = datetime.strptime(ordered_date, '%m/%d/%Y'), # sample date: 12/30/2018
         order.ordered = ordered
         order.shipping_address = Address.objects.get(id=shipping_address_id)
         order.billing_address = Address.objects.get(id=billing_address_id)
@@ -1225,3 +1233,4 @@ class OrderListUpdateAPIView(APIView):
         order.refund_granted = refund_granted
 
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
+
