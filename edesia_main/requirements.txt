@@ -109,7 +109,7 @@ typed-ast==1.4.1
 typing-extensions==3.7.4.2
 Unidecode==1.1.1
 urllib3==1.25.10
-virtualenv==20.0.30
+#virtualenv==20.0.30
 wcwidth==0.2.5
 WeasyPrint==52.2
 webencodings==0.5.1
